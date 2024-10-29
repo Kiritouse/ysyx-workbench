@@ -35,7 +35,7 @@ endif
 default:
 	@echo "-- Verilator switch_block simple example"
 	@echo "-- VERILATE & BUILD --------"
-	$(VERILATOR) -cc --exe --build -j top.v main.cpp --trace
+	$(VERILATOR) -cc --exe --build -j top.v main.cpp --trace --top-module top
 	@echo "-- RUN ---------------------"
 	obj_dir/Vtop
 	@echo "-- DONE --------------------"

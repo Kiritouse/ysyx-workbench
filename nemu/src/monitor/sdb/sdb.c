@@ -49,8 +49,32 @@ static int cmd_c(char *args) {
 
 
 static int cmd_q(char *args) {
+  nemu_state.state = NEMU_QUIT;
   return -1;
 }
+
+static int cmd_info(char*args){
+  if(args==NULL){
+    printf("No agrs\n");
+  }
+  else if(strcmp(args,"r")==0){ //打印寄存器状态
+    isa_reg_display();
+  }
+  else if(strcmp(args,"w")==0){ //打印监视点信息
+    printf("打印监视点信息暂时还没有实现");
+    watchpoint_display();
+  }
+}
+
+/*my implement */
+static int cmd_si(char*agrs){
+    int step = 0;
+    if(agrs==NULL) step = 1;
+    else
+      sscanf(agrs,"%d",&step);
+    cpu_exec(step);
+    return 0;
+} 
 
 static int cmd_help(char *args);
 
@@ -62,7 +86,7 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-
+  {"si","step",cmd_si},
   /* TODO: Add more commands */
 
 };
@@ -96,6 +120,7 @@ void sdb_set_batch_mode() {
   is_batch_mode = true;
 }
 
+/*指令读取的地方 */
 void sdb_mainloop() {
   if (is_batch_mode) {
     cmd_c(NULL);
@@ -106,13 +131,13 @@ void sdb_mainloop() {
     char *str_end = str + strlen(str);
 
     /* extract the first token as the command */
-    char *cmd = strtok(str, " ");
+    char *cmd = strtok(str, " "); //返回第一个被分割的指令，同时内部储存一个静态指针,指向上一次分割后的下一个字符串
     if (cmd == NULL) { continue; }
 
     /* treat the remaining string as the arguments,
      * which may need further parsing
      */
-    char *args = cmd + strlen(cmd) + 1;
+    char *args = cmd + strlen(cmd) + 1; //指向指令的具体内容
     if (args >= str_end) {
       args = NULL;
     }

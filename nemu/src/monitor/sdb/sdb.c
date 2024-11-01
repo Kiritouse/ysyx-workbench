@@ -25,7 +25,7 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 void watchpoint_display(void);
-word_t vaddr_read(vaddr_t addr, int len);
+word_t paddr_read(vaddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -89,7 +89,7 @@ static int cmd_x(char*args){
   vaddr_t address;
   sscanf(address_str,"%x",&address);
   for(int i = 0;i<N;i++){
-    word_t data = vaddr_read(address+i*4,4);
+    word_t data = paddr_read(address+i*4,4);
     printf("0x%08x: 0x%08x\n",address+i*4,data);
   }
   return 0;

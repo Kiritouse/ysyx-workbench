@@ -166,8 +166,24 @@ uint32_t find_op(uint32_t p,uint32_t q){
   return min_op;
 }
 bool check_parentheses(int p,int q){ //检查p和q包围的表达式是否
-
-  return false;
+  if(tokens[p].type!='('||tokens[q].type!=')')return false;
+  int l = p,r = q;
+  while(l<r){
+    if(tokens[l].type=='('){
+      if(tokens[r].type==')'){
+        l++,r--;
+        continue;
+      }
+      else{
+        r--;
+      }
+    }
+    else if(tokens[r].type==')'){
+      return false;
+    }
+    else l++;
+  }
+  return true;
 }
 word_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
   if(p>q){

@@ -155,7 +155,7 @@ uint32_t find_op(uint32_t p,uint32_t q){
     }
     if(tokens[i].type=='*'||tokens[i].type=='/'){
         if(min_op==-1) min_op = i;
-        if(tokens[min_op].type=='*'||tokens[min_op].type=='/'){
+        if(tokens[min_op].type=='*'||tokens[min_op].type=='/'){// 查看上一个op的符号类型
           min_op = i;
         }        
     }
@@ -166,9 +166,26 @@ uint32_t find_op(uint32_t p,uint32_t q){
   return min_op;
 }
 bool check_parentheses(int p,int q){ //检查p和q包围的表达式是否
-
+  if(tokens[p].type!='('||tokens[q].type!=')')return false;
+  int l = p,r = q;
+  while(l<r){
+    if(tokens[l].type=='('){
+      if(tokens[r].type==')'){
+        l++,r--;
+        continue;
+      }
+      else{
+        r--;
+      }
+    }
+    else if(tokens[r].type==')'){
+      return false;
+    }
+    else l++;
+  }
+  return true;
 }
-uint32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
+word_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
   if(p>q){
     assert(0);
     return -1;
@@ -213,7 +230,5 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
-
-  return 0;
+  return eval(0,nr_token-1);
 }

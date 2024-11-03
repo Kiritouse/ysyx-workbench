@@ -25,6 +25,7 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 void watchpoint_display(void);
+word_t expr(char *e, bool *success);//计算表达式用
 word_t paddr_read(paddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -67,9 +68,10 @@ static int cmd_si(char*args){
     cpu_exec(step);
     return 0;
 } 
+
 static int cmd_info(char*args){
   if(args==NULL){
-    printf("No agrs\n");
+    printf("No args\n");
   }
   else if(strcmp(args,"r")==0){ //打印寄存器状态
     isa_reg_display();
@@ -77,6 +79,24 @@ static int cmd_info(char*args){
   else if(strcmp(args,"w")==0){ //打印监视点信息
     printf("打印监视点信息暂时还没有实现\n");
     watchpoint_display();
+  }
+  return 0;
+}
+
+static int cmd_p(char*args){
+  if(args==NULL){
+    printf("No args\n");
+  }
+  else{
+    bool success = false;
+    word_t ans = 0;
+     ans =  expr(args,&success);
+     if(success!=true){
+      printf("expr false\n");
+     }
+     else{
+      printf("expr = %d\n",ans);
+     }
   }
   return 0;
 }
@@ -108,6 +128,7 @@ static struct {
   {"si","step n steps",cmd_si},
    {"info","info r,Display all registers,info w display all watchpoints ",cmd_info},
     {"x","x N address,Displays an offset of N bytes based on addressisplay the address",cmd_x},
+    {"p","p expr,it will calculate expr and print the answer of expr",cmd_p},
   /* TODO: Add more commands */
 
 };

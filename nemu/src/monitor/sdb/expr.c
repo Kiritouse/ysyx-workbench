@@ -209,7 +209,7 @@ int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结�
     uint32_t op = find_op(p,q);
     int32_t left_ans = eval(p,op-1);
     int32_t right_ans = eval(op+1,q);
-    if(tokens[op+1].type==TK_MINUS_SIGN||(op+2<nr_token&&tokens[op+2].type==TK_MINUS_SIGN)){
+    if((op+1<nr_token&&tokens[op+1].type==TK_MINUS_SIGN)|(op+2<nr_token&&tokens[op+2].type==TK_MINUS_SIGN)){
         right_ans*=(-1);
     }
     

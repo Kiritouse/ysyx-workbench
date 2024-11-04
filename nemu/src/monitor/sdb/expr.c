@@ -25,6 +25,7 @@ enum {
   TK_NUM,
   TK_LEFT_BRACKET,TK_RIGHT_BRACKET,
   /* TODO: Add more token types */
+  TK_MINUS_SIGN,
 
 };
 
@@ -144,7 +145,14 @@ static bool make_token(char *e) {
       return false;
     }
   }
-  printf("成功返回true\n");
+  for(int i = 0;i<nr_token;i++){
+    if(tokens[i].type=='-'){
+        if(i==0||(i!=0&&(tokens[i-1].type!=TK_NUM&&tokens[i-1].type!=')'))){
+          printf("tokens[%d].type是负数\n",i);
+          // tokens[i].type = TK_MINUS_SIGN;
+        }
+      }
+  }
   return true;
 }
 

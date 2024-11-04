@@ -91,7 +91,7 @@ static int cmd_p(char*args){
     bool success = true;
     word_t ans = 0;
      ans =  expr(args,&success);
-     if(success!=true){
+     if(success!=true){  //TODO：这里似乎有bug，不能识别错误？
       printf("expr false\n");
      }
      else{

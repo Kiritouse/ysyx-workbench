@@ -44,7 +44,7 @@ static struct rule {
   {"\\/", '/'},         // div
   {"\\(",TK_LEFT_BRACKET},//左括号
   {"\\)",TK_RIGHT_BRACKET},//右括号
-  {"[0-9]+", TK_NUM},//num
+  {"\\b[0-9]+\\b", TK_NUM},//num
   {"==", TK_EQ},        // equal
 };
 

@@ -25,7 +25,6 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 void watchpoint_display(void);
-word_t expr(char *e, bool *success);//计算表达式用
 word_t paddr_read(paddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */

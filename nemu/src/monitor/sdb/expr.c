@@ -149,7 +149,7 @@ static bool make_token(char *e) {
     if(tokens[i].type=='-'){
         if(i==0||(i!=0&&(tokens[i-1].type!=TK_NUM&&tokens[i-1].type!=')'))){
           printf("tokens[%d].type是负数\n",i);
-          // tokens[i].type = TK_MINUS_SIGN;
+          tokens[i].type = TK_MINUS_SIGN;
         }
       }
   }
@@ -194,7 +194,7 @@ bool check_parentheses(int p,int q){ //检查p和q包围的表达式是否
   }
   return true;
 }
-word_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
+int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
   if(p>q){
     assert(0);
     return -1;
@@ -207,8 +207,12 @@ word_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结�
   }
   else{
     uint32_t op = find_op(p,q);
-    word_t left_ans = eval(p,op-1);
-    word_t right_ans = eval(op+1,q);
+    int32_t left_ans = eval(p,op-1);
+    int32_t right_ans = eval(op+1,q);
+    if(tokens[op+1].type==TK_MINUS_SIGN||(op+2<nr_token&&tokens[op+2].type==TK_MINUS_SIGN)){
+        right_ans*=(-1);
+    }
+    
 
     switch(tokens[op].type){
       case '+':
@@ -232,7 +236,7 @@ word_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结�
   }
 
 }
-word_t expr(char *e, bool *success) {
+int32_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     printf("make_token false\n");
     *success = false;

@@ -226,6 +226,7 @@ word_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结�
 }
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
+    printf("make_token false\n");
     *success = false;
     return 0;
   }

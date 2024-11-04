@@ -102,8 +102,8 @@ static bool make_token(char *e) {
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
-        switch (rules[i].token_type) { //
-          case TK_NOTYPE: //遇到空格即使匹配上了也不用管
+        switch (rules[i].token_type) { //记录用了哪个规则进行匹配
+          case TK_NOTYPE: //跳过空格
             break;
           case '+':
             tokens[nr_token++].type= '+';

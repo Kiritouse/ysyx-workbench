@@ -128,9 +128,11 @@ static bool make_token(char *e) {
           case TK_EQ:
             tokens[nr_token].type = TK_EQ;
             strncpy(tokens[nr_token++].str, substr_start,substr_len);
+            break;
           case TK_NUM:
             tokens[nr_token].type = TK_NUM;
             strncpy(tokens[nr_token++].str, substr_start,substr_len);
+            break;
           default: TODO();
         }
 
@@ -198,8 +200,8 @@ word_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结�
   }
   else{
     uint32_t op = find_op(p,q);
-    uint32_t left_ans = eval(p,op-1);
-    uint32_t right_ans = eval(op+1,q);
+    word_t left_ans = eval(p,op-1);
+    word_t right_ans = eval(op+1,q);
 
     switch(tokens[op].type){
       case '+':

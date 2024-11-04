@@ -88,7 +88,7 @@ static int cmd_p(char*args){
     printf("No args\n");
   }
   else{
-    bool success = false;
+    bool success = true;
     word_t ans = 0;
      ans =  expr(args,&success);
      if(success!=true){

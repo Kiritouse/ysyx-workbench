@@ -148,7 +148,6 @@ static bool make_token(char *e) {
   for(int i = 0;i<nr_token;i++){
     if(tokens[i].type=='-'){
         if(i==0||(i!=0&&(tokens[i-1].type!=TK_NUM&&tokens[i-1].type!=')'))){
-          printf("tokens[%d].type是负数\n",i);
           tokens[i].type = TK_MINUS_SIGN;
         }
       }

@@ -25,7 +25,6 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 void watchpoint_display(void);
-word_t expr(char *e, bool *success);//计算表达式用
 word_t paddr_read(paddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -88,10 +87,10 @@ static int cmd_p(char*args){
     printf("No args\n");
   }
   else{
-    bool success = false;
+    bool success = true;
     word_t ans = 0;
      ans =  expr(args,&success);
-     if(success!=true){
+     if(success!=true){  //TODO：这里似乎有bug，不能识别错误？
       printf("expr false\n");
      }
      else{

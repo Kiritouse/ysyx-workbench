@@ -25,6 +25,7 @@ enum {
   TK_NUM,
   TK_LEFT_BRACKET,TK_RIGHT_BRACKET,
   /* TODO: Add more token types */
+  TK_MINUS_SIGN,
 
 };
 
@@ -44,7 +45,7 @@ static struct rule {
   {"\\/", '/'},         // div
   {"\\(",TK_LEFT_BRACKET},//左括号
   {"\\)",TK_RIGHT_BRACKET},//右括号
-  {"[0-9]+", TK_NUM},//num
+  {"\\b[0-9]+\\b", TK_NUM},//num
   {"==", TK_EQ},        // equal
 };
 
@@ -102,8 +103,8 @@ static bool make_token(char *e) {
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
-        switch (rules[i].token_type) { //
-          case TK_NOTYPE: //遇到空格即使匹配上了也不用管
+        switch (rules[i].token_type) { //记录用了哪个规则进行匹配
+          case TK_NOTYPE: //跳过空格
             break;
           case '+':
             tokens[nr_token++].type= '+';
@@ -128,12 +129,13 @@ static bool make_token(char *e) {
           case TK_EQ:
             tokens[nr_token].type = TK_EQ;
             strncpy(tokens[nr_token++].str, substr_start,substr_len);
+            break;
           case TK_NUM:
             tokens[nr_token].type = TK_NUM;
             strncpy(tokens[nr_token++].str, substr_start,substr_len);
+            break;
           default: TODO();
         }
-
         break;
       }
     }
@@ -143,7 +145,13 @@ static bool make_token(char *e) {
       return false;
     }
   }
-
+  for(int i = 0;i<nr_token;i++){
+    if(tokens[i].type=='-'){
+        if(i==0||(i!=0&&(tokens[i-1].type!=TK_NUM&&tokens[i-1].type!=')'))){
+          tokens[i].type = TK_MINUS_SIGN;
+        }
+      }
+  }
   return true;
 }
 
@@ -185,7 +193,7 @@ bool check_parentheses(int p,int q){ //检查p和q包围的表达式是否
   }
   return true;
 }
-word_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
+int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
   if(p>q){
     assert(0);
     return -1;
@@ -193,13 +201,18 @@ word_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结�
   else if(p==q){
     return atoi(tokens[p].str);
   }
+  else if(p+1==q&&tokens[p].type==TK_MINUS_SIGN){
+    return -atoi(tokens[q].str);
+  }
   else if(check_parentheses(p,q)){ //如果p,q被对配对的括号包围
     return eval(p+1,q-1);
   }
   else{
     uint32_t op = find_op(p,q);
-    uint32_t left_ans = eval(p,op-1);
-    uint32_t right_ans = eval(op+1,q);
+    int32_t left_ans = eval(p,op-1);
+
+    int32_t right_ans = eval(op+1,q);
+    
 
     switch(tokens[op].type){
       case '+':
@@ -223,8 +236,9 @@ word_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结�
   }
 
 }
-word_t expr(char *e, bool *success) {
+int32_t expr(char *e, bool *success) {
   if (!make_token(e)) {
+    printf("make_token false\n");
     *success = false;
     return 0;
   }

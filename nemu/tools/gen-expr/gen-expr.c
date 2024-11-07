@@ -20,8 +20,7 @@
 #include <assert.h>
 #include <string.h>
 #include <unistd.h>
-#define MAX_DEPTH 1000
-typedef uint32_t word_t;
+#define MAX_DEPTH 250
 // this should be enough
 static char buf[65536+13] = {};
 static char code_buf[65536 +13+ 128] = {}; // a little larger than `buf` 
@@ -35,11 +34,11 @@ static char *code_format =
 "  return 0; "
 "}";
 static unsigned long int len_buf = 0;
-static word_t choose(word_t n){
+static int choose(int n){
   return rand()%n;
 }
 static void gen_num(){
-  word_t num = choose(9)%9+1; //生成1-9
+  int num = choose(9)%9+1; //生成1-9
   if(len_buf+7<sizeof(buf)){
     buf[len_buf++] = num+'0';
   }
@@ -47,7 +46,7 @@ static void gen_num(){
 }
 static void gen_rand_op(){
   char ops[] = {'+','-','*','/'};
-  word_t index = choose(4);//随机选择生成一个字符
+  int index = choose(4);//随机选择生成一个字符
   if(len_buf+3<sizeof(buf)){
     buf[len_buf++] = ops[index];
   }
@@ -131,17 +130,9 @@ int main(int argc, char *argv[]) {
     assert(fp != NULL);
     fputs(code_buf, fp);
     fseek(fp,0,SEEK_END);
-    file_size = ftell(fp);
-    if(file_size==0){
-      if(i!=0)
-        i--;
-      continue;
-    }
     fclose(fp);
-
     FILE*fp_err = fopen("/tmp/.err_msg_code","w");
     assert(fp_err!=NULL);
-
     int ret = system("gcc /tmp/.code.c -o /tmp/.expr 2> /tmp/.err_msg_code"); //将错误的信息重定向到错误文件中去
     if (ret != 0) {
       if(i!=0)

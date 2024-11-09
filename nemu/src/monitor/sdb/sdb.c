@@ -114,6 +114,43 @@ static int cmd_x(char*args){
   return 0;
 }
 
+static int cmd_test_expr(char*args){ //test file_path
+  int right_cnt = 0;
+  FILE *input_file = fopen(args,"r");
+    if(input_file==NULL){
+      printf("file open fail,please check the path of file");
+    }
+    char line_data[1024*4] = {};
+      unsigned int cor_val = 0;
+    char buf[1024*4] = {};
+
+    for(int i = 0;i<100;i++){
+      memset(line_data,0,sizeof(line_data));
+      memset(buf,0,sizeof(buf));
+      if(fgets(line_data,sizeof(line_data),input_file)==NULL){
+          perror("read data error");
+          break;
+      }
+      char* token = strtok(line_data," ");
+      if(token == NULL){
+        printf("read correct val error");
+        continue;
+      }
+      cor_val = atoi(token);
+      while((token = strtok(NULL,"\n"))){
+        strcat(buf,token);
+      }
+      printf("value : %u, express: %s\n",cor_val,buf);
+      bool success = true;
+      unsigned res = (unsigned int)expr(buf,&success);
+      if(res==cor_val)right_cnt++;
+    }
+    printf("test 100 expressions,the accuracy is %d/100\n",right_cnt);
+    fclose(input_file);
+    return 0;
+
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -128,6 +165,7 @@ static struct {
    {"info","info r,Display all registers,info w display all watchpoints ",cmd_info},
     {"x","x N address,Displays an offset of N bytes based on addressisplay the address",cmd_x},
     {"p","p expr,it will calculate expr and print the answer of expr",cmd_p},
+    {"test","test file_path,test accu of eval function",cmd_test_expr},
   /* TODO: Add more commands */
 
 };

@@ -186,7 +186,7 @@ bool check_parentheses(int p,int q){ //检查p和q包围的表达式是否
         r--;
       }
     }
-    else if(tokens[r].type==')'){
+    else if(tokens[l].type==')'){ //这里之前竟然写成了r
       return false;
     }
     else l++;

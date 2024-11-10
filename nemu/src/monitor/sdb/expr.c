@@ -21,11 +21,14 @@
 #include <regex.h>
 #define MaxSize 100
 enum {
-  TK_NOTYPE = 256, TK_EQ,
+  TK_NOTYPE = 256, TK_EQ,TK_NEQ,
   TK_NUM,
-  TK_LEFT_BRACKET,TK_RIGHT_BRACKET,
+  TK_LEFT_BRACKET,TK_RIGHT_BRACKET,//左右括号
   /* TODO: Add more token types */
-  TK_MINUS_SIGN,
+  TK_NEGATIVE,//负数
+  TK_AND,TK_OR,TK_NOT,TK_DEREF,//and or ! 指针解引用
+  TK_REG,//寄存器
+  TK_HEX,//十六进制
 };
 
 static struct rule {
@@ -46,6 +49,13 @@ static struct rule {
   {"\\)",TK_RIGHT_BRACKET},//右括号
   {"\\b[0-9]+\\b", TK_NUM},//num
   {"==", TK_EQ},        // equal
+  {"!=",TK_NEQ},
+  {"&&",TK_AND},
+  {"\\|\\|",TK_OR},
+  {"!",TK_NOT},
+  {"\\*",TK_DEREF},//指针解引用
+  {"\\$(0|ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])"}//riscv32 ,匹配寄存器
+
 };
 
 
@@ -78,7 +88,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[1280] __attribute__((used)) = {}; //这个还是调大点,默认给的32
+static Token tokens[32] __attribute__((used)) = {}; //这个还是调大点,默认给的32
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -130,12 +140,23 @@ static bool make_token(char *e) {
           //need to record sub_str
           case TK_EQ:
             tokens[nr_token].type = TK_EQ;
-            strncpy(tokens[nr_token++].str, substr_start,substr_len);
+            strncpy(tokens[nr_token].str, substr_start,substr_len);
+            *(tokens[nr_token++].str+substr_len)='\0';
             break;
           case TK_NUM:
             tokens[nr_token].type = TK_NUM;
-            strncpy(tokens[nr_token++].str, substr_start,substr_len);
+            strncpy(tokens[nr_token].str, substr_start,substr_len);
+            *(tokens[nr_token++].str+substr_len)='\0';
             break;
+          case TK_HEX:
+            tokens[nr_token].type = TK_HEX;
+            strncpy(tokens[nr_token].str,substr_start+2,substr_len-2);//丢掉0x
+            *(tokens[nr_token++].str+substr_len)='\0';
+            break;
+          case TK_REG:
+            tokens[nr_token].type = TK_REG;
+            strncpy(tokens[nr_token].str,substr_start+1,substr_len-1);//丢掉$
+            *(tokens[nr_token++].str+substr_len)='\0';
           default: TODO();
         }
         break;
@@ -150,7 +171,7 @@ static bool make_token(char *e) {
   for(int i = 0;i<nr_token;i++){
     if(tokens[i].type=='-'){
         if(i==0||(i!=0&&(tokens[i-1].type!=TK_NUM&&tokens[i-1].type!=')'))){
-          tokens[i].type = TK_MINUS_SIGN;
+          tokens[i].type = TK_NEGATIVE;
         }
       }
   }
@@ -194,7 +215,6 @@ bool check_parentheses(int p, int q) {
   if(cnt==0)return true;
   return false;
 }
-
 int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
   if(p>q){
     assert(0);
@@ -203,7 +223,7 @@ int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结�
   else if(p==q){
     return atoi(tokens[p].str);
   }
-  else if(p+1==q&&tokens[p].type==TK_MINUS_SIGN){
+  else if(p+1==q&&tokens[p].type==TK_NEGATIVE){
     return -atoi(tokens[q].str);
   }
   else if(check_parentheses(p,q)){ //如果p,q被对配对的括号包围

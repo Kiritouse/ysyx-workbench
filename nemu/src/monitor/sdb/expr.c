@@ -176,28 +176,23 @@ uint32_t find_op(uint32_t p,uint32_t q){
   return min_op;
 }
 bool check_parentheses(int p, int q) {
-  // 检查第一个和最后一个字符是否是括号
-  if (tokens[p].type != '(' || tokens[q].type != ')') {
+  if(tokens[p].type!='(' || tokens[q].type!=')'){
     return false;
   }
-
-  // 计数括号的平衡
-  int balance = 0;
-  for (int i = p; i <= q; i++) {
-    if (tokens[i].type == '(') {
-      balance++;
-    } else if (tokens[i].type == ')') {
-      balance--;
+  int cnt=0;
+  for(int i=p;i<=q;++i){
+    if(tokens[i].type=='(')cnt++;
+    else if(tokens[i].type==')'){
+      if(cnt>0)cnt--;
+      else return false;
     }
-
-    // 如果在中间某个位置括号不平衡，返回 false
-    if (balance == 0 && i != q) {
+    else if(cnt==0&&(tokens[i].type=='+'||tokens[i].type=='-'||tokens[i].type=='*'||tokens[i].type=='/'
+    ||tokens[i].type==TK_EQ)){
       return false;
     }
   }
-
-  // 最后检查括号是否完全平衡
-  return balance == 0;
+  if(cnt==0)return true;
+  return false;
 }
 
 int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置

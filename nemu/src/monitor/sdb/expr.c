@@ -197,21 +197,43 @@ static bool make_token(char *e) {
 }
 
 uint32_t find_op(uint32_t p,uint32_t q){
-  uint32_t min_op = -1;//记录优先级最低的符号
-  for(uint32_t i = p;i<=q;i++){
-    if(tokens[i].type=='('){ //main op 一定不在括号的表达式中
-      while(tokens[i].type!=')')i++;
-    }
-    if(tokens[i].type=='*'||tokens[i].type=='/'){
-        if(min_op==-1) min_op = i;
-        if(tokens[min_op].type=='*'||tokens[min_op].type=='/'){// 查看上一个op的符号类型
+  // uint32_t min_op = -1;//记录优先级最低的符号
+  // for(uint32_t i = p;i<=q;i++){
+  //   if(tokens[i].type=='('){ //main op 一定不在括号的表达式中
+  //     while(tokens[i].type!=')')i++;
+  //   }
+  //   if(tokens[i].type=='*'||tokens[i].type=='/'){
+  //       if(min_op==-1) min_op = i;
+  //       if(tokens[min_op].type=='*'||tokens[min_op].type=='/'){// 查看上一个op的符号类型
+  //         min_op = i;
+  //       }        
+  //   }
+  //   if(tokens[i].type=='+'||tokens[i].type=='-'){
+  //     min_op = i;
+  //   }
+  // }
+  // return min_op;
+    uint32_t min_op = -1; // 记录优先级最低的符号
+  MyStack S;
+  InitStack(&S);
+
+  for (uint32_t i = p; i <= q; i++) {
+    if (tokens[i].type == '(') {
+      Push(&S, tokens[i].type); // 左括号入栈
+    } else if (tokens[i].type == ')') {
+      char topElem;
+      Pop(&S, &topElem); // 右括号出栈
+    } else if (StackEmpty(&S)) { // 只在栈为空时检查运算符
+      if (tokens[i].type == '*' || tokens[i].type == '/') {
+        if (min_op == -1 || tokens[min_op].type == '+' || tokens[min_op].type == '-') {
           min_op = i;
-        }        
-    }
-    if(tokens[i].type=='+'||tokens[i].type=='-'){
-      min_op = i;
+        }
+      } else if (tokens[i].type == '+' || tokens[i].type == '-') {
+        min_op = i;
+      }
     }
   }
+
   return min_op;
 }
 bool check_parentheses(int p, int q) {
@@ -249,7 +271,7 @@ int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结�
   else if(p+1==q&&tokens[p].type==TK_NEGATIVE){
     return -atoi(tokens[q].str);
   }
-  else if(check_parentheses(p,q)){ //,这里是检查p,q是否被括号包围，而不是里面是否有括号匹配
+  else if(check_parentheses(p,q)){//TODO:处理4*((3+1)+（4+1))这种情况,我这样做暂时不行
     return eval(p+1,q-1);
   }
   else{

@@ -173,25 +173,34 @@ uint32_t find_op(uint32_t p,uint32_t q){
   }
   return min_op;
 }
-bool check_parentheses(int p,int q){ //检查p和q包围的表达式是否
-  if(tokens[p].type!='('||tokens[q].type!=')')return false;
-  int l = p,r = q;
-  while(l<r){
-    if(tokens[l].type=='('){
-      if(tokens[r].type==')'){
-        l++,r--;
-        continue;
+bool check_parentheses(int p,int q)
+{
+  bool flag=false;
+  if(tokens[p].type=='(' && tokens[q].type == ')')
+  {
+    for(int i =p+1;i<q;) //[p+1,q-1]
+    {
+      if (tokens[i].type==')')
+      {
+        break;
       }
-      else{
-        r--;
+      else if (tokens[i].type=='(')
+      {
+        while(tokens[i+1].type!=')' )
+        {
+          i++;
+          if(i==q-1)
+          {      
+            break;
+          }
+        }
+        i+=2;
       }
+      else i++; 
     }
-    else if(tokens[l].type==')'){ //这里之前竟然写成了r
-      return false;
-    }
-    else l++;
+    flag=true;
   }
-  return true;
+  return flag;
 }
 int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
   if(p>q){

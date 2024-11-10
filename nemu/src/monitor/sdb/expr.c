@@ -215,6 +215,9 @@ uint32_t find_op(uint32_t p,uint32_t q){
   return min_op;
 }
 bool check_parentheses(int p, int q) {
+  if(tokens[p].type!='('||tokens[q].type!=')'){
+    return false;
+  }
   MyStack S;
   InitStack(&S);
   
@@ -246,7 +249,7 @@ int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结�
   else if(p+1==q&&tokens[p].type==TK_NEGATIVE){
     return -atoi(tokens[q].str);
   }
-  else if(check_parentheses(p,q)){ //如果p,q被对配对的括号包围
+  else if(check_parentheses(p,q)){ //,这里是检查p,q是否被括号包围，而不是里面是否有括号匹配
     return eval(p+1,q-1);
   }
   else{

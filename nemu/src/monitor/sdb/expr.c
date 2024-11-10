@@ -53,7 +53,7 @@ static struct rule {
   {"&&",TK_AND},
   {"\\|\\|",TK_OR},
   {"!",TK_NOT},
-  {"\\*",TK_DEREF},//指针解引用
+  //{"\\*",TK_DEREF},//指针解引用
   {"\\$(0|ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])"}//riscv32 ,匹配寄存器
 
 };
@@ -88,7 +88,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {}; //这个还是调大点,默认给的32
+static Token tokens[1280] __attribute__((used)) = {}; //这个还是调大点,默认给的32
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {

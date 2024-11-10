@@ -19,14 +19,13 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>
-
+#define MaxSize 100
 enum {
   TK_NOTYPE = 256, TK_EQ,
   TK_NUM,
   TK_LEFT_BRACKET,TK_RIGHT_BRACKET,
   /* TODO: Add more token types */
   TK_MINUS_SIGN,
-
 };
 
 static struct rule {
@@ -57,6 +56,44 @@ static regex_t re[NR_REGEX] = {};
 /* Rules are used for many times.
  * Therefore we compile them only once before any usage.
  */
+/*数据结构 */
+typedef struct{
+	char data[MaxSize];
+	int top;
+}SqStack;
+
+//初始化栈
+void InitStack(SqStack *S){
+	S->top = -1;
+}
+
+//判断栈是否为空
+bool IsEmpty(SqStack S){
+	if(S.top == -1){
+		return true;
+	}
+	return false;
+}
+//新元素入栈
+void Push(SqStack *S,char x){
+	if(S->top == MaxSize-1){
+		printf("栈已满"); //栈已满
+		return;
+	}
+	S->top += 1;
+	S->data[S->top] = x;
+}
+//栈顶元素出栈，用x返回
+void Pop(SqStack *S,char *x){
+	if(S->top == -1){
+		printf("栈已满");
+		return;
+	}
+	*x = S->data[S->top];
+	S->top -= 1;
+}
+
+
 void init_regex() {
   int i;
   char error_msg[128];
@@ -175,26 +212,24 @@ uint32_t find_op(uint32_t p,uint32_t q){
 }
 bool check_parentheses(int p,int q)
 {
-  if (tokens[p].type != '(' || tokens[q].type != ')') {
-    return false;
-  }
-
-  // 计数括号的平衡
-  int balance = 0;
-  for (int i = p; i <= q; i++) {
-    if (tokens[i].type == '(') {
-      balance++;
-    } else if (tokens[i].type == ')') {
-      balance--;
-    }
-    // 如果在中间某个位置括号不平衡，返回 false
-    if (balance == 0 && i != q) {
-      return false;
-    }
-  }
-
-  // 最后检查括号是否完全平衡
-  return balance == 0;   
+  SqStack S;
+  InitStack(&S);
+  InitStack(&S); //初始化栈
+	for(int i=p;i<=q;i++){
+		if(tokens[i].type=='('){
+			Push(&S,tokens[i].type); //扫描到左括号就入栈
+		}else if(tokens[i].type==')'){
+			if(IsEmpty(S)){ //扫描到右括号，当前栈为空，即右括号单身情况
+				return false; //匹配失败
+			}
+			char topElem; //用来保存弹出栈的栈顶元素
+			Pop(&S,&topElem); //栈顶元素出栈
+			if(tokens[i].type==')'&&topElem!='('){
+				return false;
+			}
+		}
+	}
+	return IsEmpty(S);
 
 }
 int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置

@@ -76,7 +76,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[128] __attribute__((used)) = {}; //这个还是调大点
+static Token tokens[1280] __attribute__((used)) = {}; //这个还是调大点
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -194,7 +194,7 @@ bool check_parentheses(int p,int q)
             break;
           }
         }
-        i+=2;
+        i+=2; //跳过被括号包围的表达式
       }
       else i++; 
     }

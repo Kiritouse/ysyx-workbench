@@ -76,7 +76,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[1280] __attribute__((used)) = {}; //这个还是调大点
+static Token tokens[1280] __attribute__((used)) = {}; //这个还是调大点,默认给的32
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -175,32 +175,27 @@ uint32_t find_op(uint32_t p,uint32_t q){
 }
 bool check_parentheses(int p,int q)
 {
-  bool flag=false;
-  if(tokens[p].type=='(' && tokens[q].type == ')')
-  {
-    for(int i =p+1;i<q;) //[p+1,q-1]
-    {
-      if (tokens[i].type==')')
-      {
-        break;
-      }
-      else if (tokens[i].type=='(')
-      {
-        while(tokens[i+1].type!=')' )
-        {
-          i++;
-          if(i==q-1)
-          {      
-            break;
-          }
-        }
-        i+=2; //跳过被括号包围的表达式
-      }
-      else i++; 
-    }
-    flag=true;
+  if (tokens[p].type != '(' || tokens[q].type != ')') {
+    return false;
   }
-  return flag;
+
+  // 计数括号的平衡
+  int balance = 0;
+  for (int i = p; i <= q; i++) {
+    if (tokens[i].type == '(') {
+      balance++;
+    } else if (tokens[i].type == ')') {
+      balance--;
+    }
+    // 如果在中间某个位置括号不平衡，返回 false
+    if (balance == 0 && i != q) {
+      return false;
+    }
+  }
+
+  // 最后检查括号是否完全平衡
+  return balance == 0;   
+
 }
 int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
   if(p>q){

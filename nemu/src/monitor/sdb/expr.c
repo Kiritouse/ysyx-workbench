@@ -20,6 +20,7 @@
  */
 #include <regex.h>
 #define MaxSize 100
+typedef char ElemType;//定义栈元素类型
 enum {
   TK_NOTYPE = 256, TK_EQ,TK_NEQ,
   TK_NUM,
@@ -67,6 +68,20 @@ static regex_t re[NR_REGEX] = {};
  * Therefore we compile them only once before any usage.
  */
 
+//-------结构体定义部分------ //
+typedef struct{
+	ElemType data[MaxSize];
+	int top;//指向栈顶元素的指针  
+}MyStack;
+//-------结构体定义部分------ //
+ 
+//-------函数声明部分------ //
+void InitStack(MyStack *S);//栈的初始化 
+bool Push(MyStack *S,ElemType e);//将元素e压入栈 
+bool Pop(MyStack *S,ElemType *x);//出栈
+bool GetTop(MyStack *S,int *x);//获取当前栈顶元素 
+bool StackEmpty(MyStack *S);//栈判空 
+bool BraketCheck(char a[],int length);//括号匹配 
 
 
 void init_regex() {
@@ -90,6 +105,9 @@ typedef struct token {
 
 static Token tokens[1280] __attribute__((used)) = {}; //这个还是调大点,默认给的32
 static int nr_token __attribute__((used))  = 0;
+
+
+//
 
 static bool make_token(char *e) {
   int position = 0;
@@ -197,23 +215,25 @@ uint32_t find_op(uint32_t p,uint32_t q){
   return min_op;
 }
 bool check_parentheses(int p, int q) {
-  if(tokens[p].type!='(' || tokens[q].type!=')'){
-    return false;
-  }
-  int cnt=0;
-  for(int i=p;i<=q;++i){
-    if(tokens[i].type=='(')cnt++;
+  MyStack S;
+  InitStack(&S);
+  
+  for(int i = p;i<=q;i++){
+    if(tokens[i].type=='('){
+      Push(&S,tokens[i].type);//左括号入栈
+    }
     else if(tokens[i].type==')'){
-      if(cnt>0)cnt--;
-      else return false;
-    }
-    else if(cnt==0&&(tokens[i].type=='+'||tokens[i].type=='-'||tokens[i].type=='*'||tokens[i].type=='/'
-    ||tokens[i].type==TK_EQ)){
-      return false;
+      if(StackEmpty(&S)){
+        return false;
+      }
+      char topElem;
+      Pop(&S,&topElem);
+      if(topElem!='('){
+        return false;
+      }
     }
   }
-  if(cnt==0)return true;
-  return false;
+  return StackEmpty(&S);
 }
 int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
   if(p>q){
@@ -267,4 +287,46 @@ int32_t expr(char *e, bool *success) {
 
   /* TODO: Insert codes to evaluate the expression. */
   return eval(0,nr_token-1);
+}
+
+//栈的初始化 
+void InitStack(MyStack *S)
+{
+	//栈的初始化需要把栈顶指针赋值为-1,此时栈中元素个数为0 
+	S->top = -1;
+}
+//入栈 
+bool Push(MyStack *S,ElemType e)
+{
+	if(S->top == MaxSize -1) //如果栈满  也可以判断 length==MaxSize  
+		return false;
+	else 
+		S->data[++S->top] = e;//指针先加一再将元素入栈  
+	return true;
+} 
+//出栈
+bool Pop(MyStack *S,ElemType *x)
+{
+	 
+	if(S->top == -1)//栈空 
+		return false;
+	else
+		*x = S->data[S->top--];//先获得元素，指针再执行--操作
+	return true;
+} 
+
+//获取当前栈顶元素
+bool GetTop(MyStack *S,int *x)
+{
+	if(S->top == -1)//如果栈空，则没有栈顶元素 
+		return false;
+	else
+		*x = S->data[S->top];//获得栈顶元素 
+	return true;
+} 
+
+//判断栈空 
+bool StackEmpty(MyStack *S)
+{
+	return S->top==-1?true:false; 
 }

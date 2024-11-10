@@ -76,7 +76,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[128] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -145,13 +145,13 @@ static bool make_token(char *e) {
       return false;
     }
   }
-  // for(int i = 0;i<nr_token;i++){
-  //   if(tokens[i].type=='-'){
-  //       if(i==0||(i!=0&&(tokens[i-1].type!=TK_NUM&&tokens[i-1].type!=')'))){
-  //         tokens[i].type = TK_MINUS_SIGN;
-  //       }
-  //     }
-  // }
+  for(int i = 0;i<nr_token;i++){
+    if(tokens[i].type=='-'){
+        if(i==0||(i!=0&&(tokens[i-1].type!=TK_NUM&&tokens[i-1].type!=')'))){
+          tokens[i].type = TK_MINUS_SIGN;
+        }
+      }
+  }
   return true;
 }
 

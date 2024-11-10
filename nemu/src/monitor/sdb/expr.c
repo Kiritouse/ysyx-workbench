@@ -196,7 +196,10 @@ static bool make_token(char *e) {
   return true;
 }
 
-uint32_t find_op(uint32_t p,uint32_t q){
+uint32_t find_op(uint32_t p,uint32_t q){ //TODO:注意4*((3+2)+(1+1)) ,到eval(3,13)的时候
+//会给判断为括号匹配上了（3+2）+（1+1） 即会出现这种情况，会判断括号匹配上了，但实际上只是数量匹配上了
+//不是实际意义上的在一个括号中，所以这里的find_op函数会出现问题
+
   // uint32_t min_op = -1;//记录优先级最低的符号
   // for(uint32_t i = p;i<=q;i++){
   //   if(tokens[i].type=='('){ //main op 一定不在括号的表达式中
@@ -216,7 +219,6 @@ uint32_t find_op(uint32_t p,uint32_t q){
     uint32_t min_op = -1; // 记录优先级最低的符号
   MyStack S;
   InitStack(&S);
-
   for (uint32_t i = p; i <= q; i++) {
     if (tokens[i].type == '(') {
       Push(&S, tokens[i].type); // 左括号入栈
@@ -236,29 +238,25 @@ uint32_t find_op(uint32_t p,uint32_t q){
 
   return min_op;
 }
-bool check_parentheses(int p, int q) {
-  if(tokens[p].type!='('||tokens[q].type!=')'){
-    return false;
+/*
+如果完整表达式被包含在一个括号里，我们就返回true，否则返回false
+*/
+static int check_parentheses(int p,int q){
+//part1
+  int cnt = 0;
+  for(int i = p; i <= q;i ++)
+  {
+    if(tokens[i].type == '(')cnt ++;
+    else if(tokens[i].type == ')')cnt --;
+    
+    if(cnt < 0)return -1;
   }
-  MyStack S;
-  InitStack(&S);
-  
-  for(int i = p;i<=q;i++){
-    if(tokens[i].type=='('){
-      Push(&S,tokens[i].type);//左括号入栈
-    }
-    else if(tokens[i].type==')'){
-      if(StackEmpty(&S)){
-        return false;
-      }
-      char topElem;
-      Pop(&S,&topElem);
-      if(topElem!='('){
-        return false;
-      }
-    }
-  }
-  return StackEmpty(&S);
+  if(cnt != 0) return -1;
+  if(tokens[p].type != '(' || tokens[q].type != ')')return 0;
+  int ret = check_parentheses(p+1,q-1);
+  if(ret == -1)return 0;//说明此处的括号不能去掉
+  else if(ret == 0||ret == 1)return 1;//说明此处的括号可以去掉
+  return 2;
 }
 int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
   if(p>q){

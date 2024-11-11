@@ -204,7 +204,7 @@ static bool make_token(char *e) {
 uint32_t find_op(uint32_t p,uint32_t q){ //TODO:
     int prior = 0; // 记录当前优先级
     int pos[20]  ={0};//优先级为i的运算符首次出现的下标
-    for(int i = 0;i<20;i++)pos[i] = -1;
+    for(int j = 0;j<20;j++)pos[j] = -1;
   MyStack S;
   InitStack(&S);
   for (uint32_t i = q; i >= p; i--) { //从右向左

@@ -248,7 +248,7 @@ static int check_parentheses(int p,int q){
   int ret = check_parentheses(p+1,q-1);
   if(ret == -1)return 0;//说明此处的括号不能去掉
   else if(ret == 0||ret == 1)return 1;//说明此处的括号可以去掉
-  return 2;
+  else assert(0);
 }
 int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束位置
   if(p>q){

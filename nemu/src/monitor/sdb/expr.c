@@ -201,38 +201,34 @@ static bool make_token(char *e) {
   return true;
 }
 
-uint32_t find_op(uint32_t p,uint32_t q){ //TODO:3*(7)*6+3/2/(5-(9))
- int in_parent=0;//首先肯定不在括号里
-  int prior=0;
-  int pos[20];//pos[i]存首次出现优先级为i的位置
-  for(int i=0;i<20;++i)pos[i]=-1;//初始化
-
-  //从右向左找
-  for(int i=q;i>=p;--i){
-    if(tokens[i].type==')'){
-      in_parent=1;
-    }
-    else if(tokens[i].type=='('){
-      in_parent=0;
-    }
-    else if(in_parent==0){
-      //设定优先级，最后返回优先级值最大的位置
-      if(tokens[i].type==TK_NEGATIVE||tokens[i].type==TK_NOT||tokens[i].type==TK_DEREF){
+uint32_t find_op(uint32_t p,uint32_t q){ //TODO:
+    uint32_t min_op = -1; // 记录优先级最低的符号
+    int prior = 0; // 记录当前优先级
+    int pos[20]  ={0};//优先级为i的运算符首次出现的下标
+    for(int i = 0;i<20;i++)pos[i] = -1;
+  MyStack S;
+  InitStack(&S);
+  for (uint32_t i = q; i <= p; i--) { //从右向左
+    if (tokens[i].type == ')') {
+      Push(&S, tokens[i].type); // 右括号入栈
+    } else if (tokens[i].type == '(') {
+      char topElem;
+      Pop(&S, &topElem); // 右括号出栈
+    } else if (StackEmpty(&S)) { // 只在栈为空时检查运算符
+       if(tokens[i].type==TK_NEGATIVE||tokens[i].type==TK_NOT||tokens[i].type==TK_DEREF){
         prior=max(prior,2);
         if(pos[2]==-1)pos[2]=i;
-      }
-      else if(tokens[i].type=='*'||tokens[i].type=='/'){
-        prior=max(prior,3);
+      if (tokens[i].type == '*' || tokens[i].type == '/') {
+        prior = max(prior, 3);
         if(pos[3]==-1)pos[3]=i;
-      }
-      else if(tokens[i].type=='+'||tokens[i].type=='-'){
-        prior=max(prior,4);
+      } else if (tokens[i].type == '+' || tokens[i].type == '-') {
+        prior = max(prior,4);
         if(pos[4]==-1)pos[4]=i;
       }
     }
+    }
   }
-  //返回优先级编号最大的位置
-  return pos[prior];
+  return min_op;
 }
 /*
 如果完整表达式被包含在一个括号里，我们就返回true，否则返回false

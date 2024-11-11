@@ -20,6 +20,11 @@
  */
 #include <regex.h>
 #define MaxSize 100
+#define max(a, b)        ({                       \
+                            typeof(a) _a = (a);   \
+                            typeof(b) _b = (b);   \
+                            (void) (&_a == &_b);  \
+                            _a > _b ? _a : _b; })
 typedef char ElemType;//定义栈元素类型
 enum {
   TK_NOTYPE = 256, TK_EQ,TK_NEQ,
@@ -196,47 +201,34 @@ static bool make_token(char *e) {
   return true;
 }
 
-uint32_t find_op(uint32_t p,uint32_t q){ //TODO:注意4*((3+2)+(1+1)) ,到eval(3,13)的时候
-//会给判断为括号匹配上了（3+2）+（1+1） 即会出现这种情况，会判断括号匹配上了，但实际上只是数量匹配上了
-//不是实际意义上的在一个括号中，所以这里的find_op函数会出现问题
-
-  // uint32_t min_op = -1;//记录优先级最低的符号
-  // for(uint32_t i = p;i<=q;i++){
-  //   if(tokens[i].type=='('){ //main op 一定不在括号的表达式中
-  //     while(tokens[i].type!=')')i++;
-  //   }
-  //   if(tokens[i].type=='*'||tokens[i].type=='/'){
-  //       if(min_op==-1) min_op = i;
-  //       if(tokens[min_op].type=='*'||tokens[min_op].type=='/'){// 查看上一个op的符号类型
-  //         min_op = i;
-  //       }        
-  //   }
-  //   if(tokens[i].type=='+'||tokens[i].type=='-'){
-  //     min_op = i;
-  //   }
-  // }
-  // return min_op;
-    uint32_t min_op = -1; // 记录优先级最低的符号
+uint32_t find_op(int32_t p,int32_t q){ //TODO:
+    int prior = 0; // 记录当前优先级
+    int pos[20]  ={0};//优先级为i的运算符首次出现的下标
+    for(int j = 0;j<20;j++)pos[j] = -1;
   MyStack S;
   InitStack(&S);
-  for (uint32_t i = p; i <= q; i++) {
-    if (tokens[i].type == '(') {
-      Push(&S, tokens[i].type); // 左括号入栈
-    } else if (tokens[i].type == ')') {
+  for (int32_t i = q; i >= p; i--) { //之前这里用uint32_t,导致i--后溢出
+    if (tokens[i].type == ')') {
+      Push(&S, tokens[i].type); // 右括号入栈
+    } else if (tokens[i].type == '(') {
       char topElem;
       Pop(&S, &topElem); // 右括号出栈
     } else if (StackEmpty(&S)) { // 只在栈为空时检查运算符
-      if (tokens[i].type == '*' || tokens[i].type == '/') {
-        if (min_op == -1 || tokens[min_op].type == '+' || tokens[min_op].type == '-') {
-          min_op = i;
-        }
+       if(tokens[i].type==TK_NEGATIVE||tokens[i].type==TK_NOT||tokens[i].type==TK_DEREF){
+        prior=max(prior,2);
+        if(pos[2]==-1)pos[2]=i;
+       }
+     else  if (tokens[i].type == '*' || tokens[i].type == '/') {
+        prior = max(prior, 3);
+        if(pos[3]==-1)pos[3]=i;
       } else if (tokens[i].type == '+' || tokens[i].type == '-') {
-        min_op = i;
+        prior = max(prior,4);
+        if(pos[4]==-1)pos[4]=i;
       }
+    
     }
   }
-
-  return min_op;
+  return pos[prior];
 }
 /*
 如果完整表达式被包含在一个括号里，我们就返回true，否则返回false
@@ -258,7 +250,7 @@ static int check_parentheses(int p,int q){
   else if(ret == 0||ret == 1)return 1;//说明此处的括号可以去掉
   return 2;
 }
-int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
+int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束位置
   if(p>q){
     assert(0);
     return -1;
@@ -269,11 +261,11 @@ int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结�
   else if(p+1==q&&tokens[p].type==TK_NEGATIVE){
     return -atoi(tokens[q].str);
   }
-  else if(check_parentheses(p,q)){//TODO:处理4*((3+1)+（4+1))这种情况,我这样做暂时不行
+  else if(check_parentheses(p,q)){
     return eval(p+1,q-1);
   }
   else{
-    uint32_t op = find_op(p,q);
+    int32_t op = find_op(p,q);
     int32_t left_ans = eval(p,op-1);
 
     int32_t right_ans = eval(op+1,q);

@@ -217,14 +217,15 @@ uint32_t find_op(uint32_t p,uint32_t q){ //TODO:
        if(tokens[i].type==TK_NEGATIVE||tokens[i].type==TK_NOT||tokens[i].type==TK_DEREF){
         prior=max(prior,2);
         if(pos[2]==-1)pos[2]=i;
-      if (tokens[i].type == '*' || tokens[i].type == '/') {
+       }
+     else  if (tokens[i].type == '*' || tokens[i].type == '/') {
         prior = max(prior, 3);
         if(pos[3]==-1)pos[3]=i;
       } else if (tokens[i].type == '+' || tokens[i].type == '-') {
         prior = max(prior,4);
         if(pos[4]==-1)pos[4]=i;
       }
-    }
+    
     }
   }
   return pos[prior];

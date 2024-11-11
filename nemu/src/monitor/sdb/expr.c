@@ -207,7 +207,7 @@ uint32_t find_op(uint32_t p,uint32_t q){ //TODO:
     for(int i = 0;i<20;i++)pos[i] = -1;
   MyStack S;
   InitStack(&S);
-  for (uint32_t i = q; i <= p; i--) { //从右向左
+  for (uint32_t i = q; i >= p; i--) { //从右向左
     if (tokens[i].type == ')') {
       Push(&S, tokens[i].type); // 右括号入栈
     } else if (tokens[i].type == '(') {

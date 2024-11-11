@@ -202,7 +202,6 @@ static bool make_token(char *e) {
 }
 
 uint32_t find_op(uint32_t p,uint32_t q){ //TODO:
-    uint32_t min_op = -1; // 记录优先级最低的符号
     int prior = 0; // 记录当前优先级
     int pos[20]  ={0};//优先级为i的运算符首次出现的下标
     for(int i = 0;i<20;i++)pos[i] = -1;
@@ -228,7 +227,7 @@ uint32_t find_op(uint32_t p,uint32_t q){ //TODO:
     }
     }
   }
-  return min_op;
+  return pos[prior];
 }
 /*
 如果完整表达式被包含在一个括号里，我们就返回true，否则返回false

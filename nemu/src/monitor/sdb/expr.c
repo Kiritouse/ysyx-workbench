@@ -201,13 +201,13 @@ static bool make_token(char *e) {
   return true;
 }
 
-uint32_t find_op(uint32_t p,uint32_t q){ //TODO:
+uint32_t find_op(int32_t p,int32_t q){ //TODO:
     int prior = 0; // 记录当前优先级
     int pos[20]  ={0};//优先级为i的运算符首次出现的下标
     for(int j = 0;j<20;j++)pos[j] = -1;
   MyStack S;
   InitStack(&S);
-  for (uint32_t i = q; i >= p; i--) { //从右向左
+  for (int32_t i = q; i >= p; i--) { //之前这里用uint32_t,导致i--后溢出
     if (tokens[i].type == ')') {
       Push(&S, tokens[i].type); // 右括号入栈
     } else if (tokens[i].type == '(') {
@@ -250,7 +250,7 @@ static int check_parentheses(int p,int q){
   else if(ret == 0||ret == 1)return 1;//说明此处的括号可以去掉
   return 2;
 }
-int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结束位置
+int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束位置
   if(p>q){
     assert(0);
     return -1;
@@ -265,7 +265,7 @@ int32_t eval(uint32_t p,uint32_t q){  //p,q指示表达式的开始位置和结�
     return eval(p+1,q-1);
   }
   else{
-    uint32_t op = find_op(p,q);
+    int32_t op = find_op(p,q);
     int32_t left_ans = eval(p,op-1);
 
     int32_t right_ans = eval(op+1,q);

@@ -36,7 +36,7 @@ enum {
   TK_REG,//寄存器
   TK_HEX,//十六进制
 };
-
+word_t vaddr_read(vaddr_t addr, int len);
 static struct rule {
   const char *regex; //正则表达式
   int token_type;//token类型
@@ -206,6 +206,7 @@ static bool make_token(char *e) {
       return false;
     }
   }
+  //处理一些特殊的符号
   for(int i = 0;i<nr_token;i++){ //处理负号
     if(tokens[i].type=='-'){
         if(i==0||(i!=0&&(tokens[i-1].type!=TK_NUM&&tokens[i-1].type!=')'))){
@@ -295,9 +296,14 @@ int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束
   else if(check_parentheses(p,q)){
     return eval(p+1,q-1);
   }
-  else{
+  else{ //处理一些特殊的符号，例如负数，指针解引用
     if(p+1==q&&tokens[p].type==TK_NEGATIVE){
-    return -atoi(tokens[q].str);
+      return -atoi(tokens[q].str);
+    }
+    else if(tokens[p].type==TK_DEREF){ //p+1跟了一个16进制的地址
+      int32_t addr = eval(p+1,q);
+      printf("%x\n",addr);
+      return vaddr_read(addr,4);
     }
   }
 

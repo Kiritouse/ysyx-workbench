@@ -25,7 +25,7 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 void watchpoint_display(void);
-word_t paddr_read(paddr_t addr, int len);
+word_t vaddr_read(vaddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -105,10 +105,10 @@ static int cmd_x(char*args){
   char*address_str = strtok(NULL," ");//十六进制地址，0x开头
 
   int N = sscanf(N_byte,"%d",&N);
-  paddr_t address;
+  vaddr_t address;
   sscanf(address_str,"%x",&address);
   for(int i = 0;i<N;i++){
-    printf("0x%08x: 0x%08x\n",address,paddr_read(address,4));
+    printf("0x%08x: 0x%08x\n",address,vaddr_read(address,4));
     address+=4;
   }
   return 0;

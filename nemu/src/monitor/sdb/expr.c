@@ -58,7 +58,6 @@ static struct rule {
   {"!=",TK_NEQ},
   {"&&",TK_AND},
   {"\\|\\|",TK_OR},
-  {"!",TK_NOT},
   //{"\\*",TK_DEREF},//指针解引用
   {"\\$(0|ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])"}//riscv32 ,匹配寄存器
 
@@ -159,10 +158,26 @@ static bool make_token(char *e) {
           case TK_RIGHT_BRACKET:
             tokens[nr_token++].type = ')';
             break;
+
           
           //need to record sub_str
           case TK_EQ:
             tokens[nr_token].type = TK_EQ;
+            strncpy(tokens[nr_token].str, substr_start,substr_len);
+            *(tokens[nr_token++].str+substr_len)='\0';
+            break;
+          case TK_NEQ:
+            tokens[nr_token].type = TK_NEQ;
+            strncpy(tokens[nr_token].str, substr_start,substr_len);
+            *(tokens[nr_token++].str+substr_len)='\0';
+            break;
+          case TK_AND:
+            tokens[nr_token].type = TK_AND;
+            strncpy(tokens[nr_token].str, substr_start,substr_len);
+            *(tokens[nr_token++].str+substr_len)='\0';
+            break;
+          case TK_OR:
+            tokens[nr_token].type = TK_OR;
             strncpy(tokens[nr_token].str, substr_start,substr_len);
             *(tokens[nr_token++].str+substr_len)='\0';
             break;
@@ -191,19 +206,24 @@ static bool make_token(char *e) {
       return false;
     }
   }
-  for(int i = 0;i<nr_token;i++){
+  for(int i = 0;i<nr_token;i++){ //处理负号
     if(tokens[i].type=='-'){
         if(i==0||(i!=0&&(tokens[i-1].type!=TK_NUM&&tokens[i-1].type!=')'))){
           tokens[i].type = TK_NEGATIVE;
         }
+    }
+    if(tokens[i].type=='*'){
+      if(i<nr_token&&tokens[i+1].type == TK_HEX ){ //解引用地址
+        tokens[i].type = TK_DEREF;
       }
+    }
   }
   return true;
 }
 
 uint32_t find_op(int32_t p,int32_t q){ //TODO:
     int prior = 0; // 记录当前优先级
-    int pos[20]  ={0};//优先级为i的运算符首次出现的下标
+    int pos[20]  ={0};//优先级为i的运算符首次出现的下标，i越大，优先级越小
     for(int j = 0;j<20;j++)pos[j] = -1;
   MyStack S;
   InitStack(&S);
@@ -212,6 +232,9 @@ uint32_t find_op(int32_t p,int32_t q){ //TODO:
       Push(&S, tokens[i].type); // 右括号入栈
     } else if (tokens[i].type == '(') {
       char topElem;
+      if(StackEmpty(&S)){
+        assert(0);
+      }
       Pop(&S, &topElem); // 右括号出栈
     } else if (StackEmpty(&S)) { // 只在栈为空时检查运算符
        if(tokens[i].type==TK_NEGATIVE||tokens[i].type==TK_NOT||tokens[i].type==TK_DEREF){
@@ -225,7 +248,18 @@ uint32_t find_op(int32_t p,int32_t q){ //TODO:
         prior = max(prior,4);
         if(pos[4]==-1)pos[4]=i;
       }
-    
+      else if(tokens[i].type == TK_EQ || tokens[i].type == TK_NEQ){
+        prior = max(prior,7);
+        if(pos[7]==-1)pos[7]=i;
+      }
+      else if(tokens[i].type == TK_AND){
+        prior = max(prior,11);
+        if(pos[11]==-1)pos[11]=i;
+      }
+      else if(tokens[i].type == TK_OR){
+        prior = max(prior,12);
+        if(pos[12]==-1)pos[12]=i;
+      }
     }
   }
   return pos[prior];
@@ -248,7 +282,7 @@ static int check_parentheses(int p,int q){
   int ret = check_parentheses(p+1,q-1);
   if(ret == -1)return 0;//说明此处的括号不能去掉
   else if(ret == 0||ret == 1)return 1;//说明此处的括号可以去掉
-  return 2;
+  else assert(0);
 }
 int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束位置
   if(p>q){
@@ -285,7 +319,20 @@ int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束
         assert(right_ans!=0);
         return left_ans/right_ans;
       break;
+      case TK_EQ:
+        return left_ans==right_ans;
+      break;
+      case TK_NEQ:
+        return left_ans!=right_ans;
+      break;
+      case TK_AND:
+        return left_ans&&right_ans;
+      break;
+      case TK_OR:
+        return left_ans||right_ans;
+      break;
       default:
+      printf("No type is matched\n");
       assert(0);
       break;
     }

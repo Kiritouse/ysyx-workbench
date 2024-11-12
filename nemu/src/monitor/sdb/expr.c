@@ -292,13 +292,12 @@ int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束
   else if(p==q){
     return atoi(tokens[p].str);
   }
-  else if(p+1==q&&tokens[p].type==TK_NEGATIVE){
-    return -atoi(tokens[q].str);
-  }
   else if(check_parentheses(p,q)){
     return eval(p+1,q-1);
   }
-  else{
+  else{ //处理一些
+    
+  }
     int32_t op = find_op(p,q);
     int32_t left_ans = eval(p,op-1);
 
@@ -337,7 +336,7 @@ int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束
       break;
     }
     
-  }
+  
 
 }
 int32_t expr(char *e, bool *success) {

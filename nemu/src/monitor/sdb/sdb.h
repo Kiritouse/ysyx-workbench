@@ -19,6 +19,6 @@
 #include <common.h>
 
 int32_t expr(char *e, bool *success);
-void watchpoint_create(char*args);
+
 
 #endif

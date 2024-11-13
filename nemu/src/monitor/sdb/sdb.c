@@ -116,19 +116,7 @@ static int cmd_x(char*args){
   return 0;
 }
 
-static int cmd_w(char*args){
-  watchpoint_create(args);
-  return 0;
-}
-static int cmd_d(char*args){
-  if(args==NULL){
-    printf("please input NO of watchpoint\n");
-  }
-  else{
-    watchpoint_delete(atoi(args));
-  }
-  return 0;
-}
+
 
 static int cmd_test_expr(char*args){ //test file_path
   int right_cnt = 0;
@@ -182,8 +170,7 @@ static struct {
     {"x","x N address,Displays an offset of N bytes based on addressisplay the address",cmd_x},
     {"p","p expr,it will calculate expr and print the answer of expr",cmd_p},
     {"test","test file_path,test accu of eval function",cmd_test_expr},
-    {"w","w expr,create a watchpoint for expr",cmd_w},
-    {"d","d NO,delete a watchpoint whose index is NO",cmd_d},
+
   /* TODO: Add more commands */
 
 };

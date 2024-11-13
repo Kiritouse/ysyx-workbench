@@ -215,7 +215,7 @@ static bool make_token(char *e) {
         }
     }
     if(tokens[i].type=='*'){
-      if(i<nr_token&&tokens[i+1].type == TK_HEX ){ //解引用地址
+      if(i==0||(tokens[i-1].type!=TK_NUM&&tokens[i-1].type!=')')){
         tokens[i].type = TK_DEREF;
       }
     }
@@ -305,6 +305,9 @@ int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束
       int32_t addr = eval(p+1,q);
       printf("%x\n",addr);
       return vaddr_read(addr,4);
+    }
+    else if(tokens[p].type==TK_REG){
+      printf("还没有实现TK_REG的eval\n");
     }
   }
 

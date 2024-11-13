@@ -25,6 +25,8 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 void watchpoint_display(void);
+void watchpoint_create(char*args);
+void watchpoint_delete(int NO);
 word_t vaddr_read(vaddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -59,7 +61,7 @@ static int cmd_q(char *args) {
 
 
 /*my implement */
-static int cmd_si(char*args){
+static int cmd_si(char*args){ //step
     int step = 0;
     if(args==NULL) step = 1;
     else
@@ -110,6 +112,20 @@ static int cmd_x(char*args){
   for(int i = 0;i<N;i++){
     printf("0x%08x: 0x%08x\n",address,vaddr_read(address,4));
     address+=4;
+  }
+  return 0;
+}
+
+static int cmd_w(char*args){
+  watchpoint_create(args);
+  return 0;
+}
+static int cmd_d(char*args){
+  if(args==NULL){
+    printf("please input NO of watchpoint\n");
+  }
+  else{
+    watchpoint_delete(atoi(args));
   }
   return 0;
 }
@@ -166,6 +182,8 @@ static struct {
     {"x","x N address,Displays an offset of N bytes based on addressisplay the address",cmd_x},
     {"p","p expr,it will calculate expr and print the answer of expr",cmd_p},
     {"test","test file_path,test accu of eval function",cmd_test_expr},
+    {"w","w expr,create a watchpoint for expr",cmd_w},
+    {"d","d NO,delete a watchpoint whose index is NO",cmd_d},
   /* TODO: Add more commands */
 
 };

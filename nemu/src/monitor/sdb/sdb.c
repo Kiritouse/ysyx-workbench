@@ -24,9 +24,9 @@ static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
-void watchpoint_display(void);
-void watchpoint_create(char*args);
-void watchpoint_delete(int NO);
+bool new_wp(char*args);
+bool free_wp(int _NO);
+void display_wp();
 word_t vaddr_read(vaddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -79,7 +79,7 @@ static int cmd_info(char*args){
   }
   else if(strcmp(args,"w")==0){ //打印监视点信息
     printf("打印监视点信息暂时还没有实现\n");
-    watchpoint_display();
+    display_wp();
   }
   return 0;
 }
@@ -115,7 +115,22 @@ static int cmd_x(char*args){
   }
   return 0;
 }
-
+static int cmd_w(char*args){
+  bool ret  = true;
+  ret = new_wp(args);
+  if(!ret){
+    printf("cmd_w error\n");
+  }
+  return 0;
+}
+static int cmd_d(char*args){
+  bool ret = true;
+  ret = free_wp(atoi(args));
+  if(!ret){
+    printf("cmd_d error\n");
+  }
+  return 0;
+}
 
 
 static int cmd_test_expr(char*args){ //test file_path
@@ -170,7 +185,8 @@ static struct {
     {"x","x N address,Displays an offset of N bytes based on addressisplay the address",cmd_x},
     {"p","p expr,it will calculate expr and print the answer of expr",cmd_p},
     {"test","test file_path,test accu of eval function",cmd_test_expr},
-
+    {"w","w expr,set up a watchpoint",cmd_w},
+    {"d","d NO,delete a watchpoint",cmd_d},
   /* TODO: Add more commands */
 
 };

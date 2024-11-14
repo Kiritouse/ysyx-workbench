@@ -31,7 +31,7 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 void device_update();
-
+void difftest_wp();
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
@@ -72,6 +72,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 
 //扫描所有监视点
 #ifdef CONFIG_WATCHPOINT
+  difftest_wp();
 
 #endif
 }

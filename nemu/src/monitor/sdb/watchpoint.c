@@ -24,8 +24,7 @@ typedef struct watchpoint {
   /* TODO: Add more members if necessary */
   bool is_free;//某个监视点是否是空闲的 is_free = 1代表空闲
   char expr[100];
-  int new_val;
-  int old_val;
+  int val;
 } WP;
 
 static WP wp_pool[NR_WP] = {}; //管理空闲的节点
@@ -44,7 +43,7 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 bool new_wp(char*args){
-  //从free_头部弹出一个空闲的监视点,并且将传入的表达式和old_val储存下来
+  //从free_头部弹出一个空闲的监视点,并且将传入的表达式和val储存下来
   if(free_==NULL){
     printf("No free watchpoint free now\n");
     return false;
@@ -55,13 +54,12 @@ bool new_wp(char*args){
   new_one->next = NULL;
   strcpy(new_one->expr,args);
   bool success = true;
-  new_one->old_val = expr(args,&success);
+  new_one->val = expr(args,&success);
   if(success==false){
     printf("expr failed in new_wp\n");
     return false;
     assert(0);
   }
-
   //尾插进head
   if(head==NULL){
     head = new_one;
@@ -73,12 +71,12 @@ bool new_wp(char*args){
     }
     p_head->next = new_one;
   }
-  printf("success set a watchpoint NO:%d,old_val = %d\n",new_one->NO,new_one->old_val);
+  printf("Watchpoint %d: %s\n", new_one->NO, new_one->expr);
   return true;
 }
 bool free_wp(int _NO){//将index为NO的从head链表中删除，并且添加到free链表中
   if(head==NULL){
-    printf("No watchpoint is set\n");
+    printf("No watchpoint\n");
     return false;
   }
   if(head->NO == _NO){
@@ -105,7 +103,43 @@ bool free_wp(int _NO){//将index为NO的从head链表中删除，并且添加到
     return false;
   }
 }
-void watchpoint_display(){
-  
+void display_wp(){
+  if(head==NULL){
+    printf("no watchpoints\n");
+    return;
+  }
+  WP* p_head = head;
+  printf("%-8s%-8s\n", "No", "Expression");
+  while (p_head) {
+    printf("%-8d%-8s\n", p_head->NO, p_head->expr);
+    p_head = p_head->next;
+  }
+
 }
+
+void difftest_wp()
+{
+  if(head==NULL){
+    printf("No Watchpoints\n");
+  }
+   WP* p_head = head;
+  while (p_head) {
+    bool success = true;
+    word_t new = expr(p_head->expr, &success);
+    if(!success){
+      printf("expr error in difftest_wp\n");
+      assert(0);
+    }
+    if (p_head->val != new) {
+      printf("Watchpoint %d: %s\n"
+        "Old value = %d\n"
+        "New value = %d\n"
+        , p_head->NO, p_head->expr, p_head->val, new);
+      p_head->val = new;
+      nemu_state.state=NEMU_STOP;
+    }
+    p_head = p_head->next;
+  }
+}
+
 

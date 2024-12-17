@@ -7,16 +7,7 @@ inline void ListNode_swap(ListNode*node1,ListNode*node2){
     node1->value = node2->value;
     node2->value = temp;
 }
-// int is_sorted(List *list, List_compare cmp) {
-//     if (list == NULL || cmp == NULL) return 0;
 
-//     LIST_FOREACH(list, first, next, cur) {
-//         if (cur->next && cmp(cur->value, cur->next->value) > 0) {
-//             return 0;
-//         }
-//     }
-//     return 1;
-// }
 // int List_bubble_sort(List*list,List_compare cmp){ //冒泡排序测试通过
 //     int ret = 0;//代表排序是否成功
 //     if(List_count(list)<=1){

@@ -23,17 +23,17 @@ List *create_words()
     return words;
 }
 
-// int is_sorted(List *words)
-// {
-//     LIST_FOREACH(words, first, next, cur) {
-//         if(cur->next && strcmp(cur->value, cur->next->value) > 0) {
-//             debug("%s %s", (char *)cur->value, (char *)cur->next->value);
-//             return 0;
-//         }
-//     }
+int is_sorted(List *words)
+{
+    LIST_FOREACH(words, first, next, cur) {
+        if(cur->next && strcmp(cur->value, cur->next->value) > 0) {
+            debug("%s %s", (char *)cur->value, (char *)cur->next->value);
+            return 0;
+        }
+    }
 
-//     return 1;
-// }
+    return 1;
+}
 
 char *test_bubble_sort()
 {

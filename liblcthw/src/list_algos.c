@@ -87,7 +87,7 @@ int List_insert_sorted(List *list, void *value, List_compare cmp)
             if (cur == list->first) {//如果是头部节点，直接就往头部添加即可
                 List_unshift(list, value);
             } else {
-                ListNode *node = calloc(0,sizeof(ListNode));
+                ListNode *node = calloc(1,sizeof(ListNode));
                 node->value = value;
                 node->next = cur;
                 node->prev = cur->prev;
@@ -95,7 +95,6 @@ int List_insert_sorted(List *list, void *value, List_compare cmp)
                 cur->prev = node;
                 list->count++;
             }
-            
         }
     }
     List_push(list, value);
@@ -110,8 +109,9 @@ List *List_merge_sort(List *list, List_compare cmp)
     // List *left = List_create();
     // List *right = List_create();
     //使用List_split函数代替分割
-    List* right = List_split(list,List_count(list)/2);//分割成左右两个部分
-    int middle = List_count(list) / 2;
+     int middle = List_count(list) / 2;
+    List* right = List_split(list,middle);//分割成左右两个部分
+   
 
     // LIST_FOREACH(list, first, next, cur) {  //分割成左右两个部分
     //     if(middle > 0) {

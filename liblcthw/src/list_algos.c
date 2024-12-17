@@ -80,7 +80,27 @@ inline List *List_merge(List *left, List *right, List_compare cmp)
 
     return result;
 }
-
+int List_insert_sorted(List *list, void *value, List_compare cmp)
+{
+    LIST_FOREACH(list, first, next, cur) {
+        if (cmp(value, cur->value) < 0) {
+            if (cur == list->first) {//如果是头部节点，直接就往头部添加即可
+                List_unshift(list, value);
+            } else {
+                ListNode *node = calloc(0,sizeof(ListNode));
+                node->value = value;
+                node->next = cur;
+                node->prev = cur->prev;
+                cur->prev->next = node;
+                cur->prev = node;
+                list->count++;
+            }
+            
+        }
+    }
+    List_push(list, value);
+    return 0;
+}
 List *List_merge_sort(List *list, List_compare cmp)
 {
     if(List_count(list) <= 1) {

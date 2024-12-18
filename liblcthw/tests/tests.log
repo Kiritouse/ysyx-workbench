@@ -1,13 +1,24 @@
-DEBUG tests/list_algos_tests.c:156: ----- RUNNING: ./tests/list_algos_tests
-DEBUG tests/list_algos_tests.c:148: 
------ test_bubble_sort
+DEBUG tests/list_algos_tests.c:157: ----- RUNNING: ./tests/list_algos_tests
 DEBUG tests/list_algos_tests.c:149: 
------ test_merge_sort
+----- test_bubble_sort
 DEBUG tests/list_algos_tests.c:150: 
------ test_measure_time
+----- test_merge_sort
 DEBUG tests/list_algos_tests.c:151: 
------ test_insert_sorted
+----- test_measure_time
 DEBUG tests/list_algos_tests.c:152: 
+----- test_insert_sorted
+DEBUG tests/list_algos_tests.c:153: 
+----- test_create_and_sort
+DEBUG tests/list_algos_tests.c:157: ----- RUNNING: ./tests/list_algos_tests
+DEBUG tests/list_algos_tests.c:149: 
+----- test_bubble_sort
+DEBUG tests/list_algos_tests.c:150: 
+----- test_merge_sort
+DEBUG tests/list_algos_tests.c:151: 
+----- test_measure_time
+DEBUG tests/list_algos_tests.c:152: 
+----- test_insert_sorted
+DEBUG tests/list_algos_tests.c:153: 
 ----- test_create_and_sort
 DEBUG tests/list_algos_tests.c:157: ----- RUNNING: ./tests/list_algos_tests
 DEBUG tests/list_algos_tests.c:149: 

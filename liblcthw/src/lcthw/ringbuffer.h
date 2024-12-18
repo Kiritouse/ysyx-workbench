@@ -4,8 +4,10 @@
 typedef struct {
     char *buffer;
     int length;
-    int start;
-    int end;
+    int start; //读操作从start开始 read buffer[start]
+    int end;//写操作从end开始write buffer[end]
+    //最大使用量为length-1，那么为空的时候start=end
+    //为full的时候(start+1)%N=end
 } RingBuffer;
 
 RingBuffer *RingBuffer_create(int length);
@@ -28,7 +30,7 @@ bstring RingBuffer_gets(RingBuffer *buffer, int amount);
 
 #define RingBuffer_available_data(B) (((B)->end + 1) % (B)->length - (B)->start - 1)
 
-#define RingBuffer_available_space(B) ((B)->length - (B)->end - 1)
+#define RingBuffer_available_space(B) ((B)->length - (B)->end - 1) //如果end已经循环了一遍了，此时end<length-1，那么此处是小于0的
 
 #define RingBuffer_full(B) (RingBuffer_available_data((B)) - (B)->length == 0)
 

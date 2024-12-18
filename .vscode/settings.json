@@ -2,6 +2,7 @@
     "files.associations": {
         "type_traits": "cpp",
         "system_error": "cpp",
-        "list_algos.h": "c"
+        "list_algos.h": "c",
+        "assert.h": "c"
     }
 }

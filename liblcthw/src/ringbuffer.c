@@ -26,25 +26,28 @@ void RingBuffer_destroy(RingBuffer *buffer)
 
 int RingBuffer_write(RingBuffer *buffer, char *data, int length)
 {
-    if(RingBuffer_available_data(buffer) == 0) {
+    /*
+    end == start出现的时候我都要将它们重置为0，使它们从退回缓冲区头部
+    */
+    if(RingBuffer_available_data(buffer) == 0) { 
         buffer->start = buffer->end = 0;
     }
-
+    //TODO:这里明天需要修改一下，因为没有做到end的回环
     check(length <= RingBuffer_available_space(buffer),
             "Not enough space: %d request, %d available",
             RingBuffer_available_data(buffer), length);
 
-    void *result = memcpy(RingBuffer_ends_at(buffer), data, length);
+    void *result = memcpy(RingBuffer_ends_at(buffer), data, length);//因为是char*,所以都是一个字节一个字节索引
     check(result != NULL, "Failed to write data into buffer.");
 
-    RingBuffer_commit_write(buffer, length);
+    RingBuffer_commit_write(buffer, length);//更新end的位置
 
     return length;
 error:
     return -1;
 }
 
-int RingBuffer_read(RingBuffer *buffer, char *target, int amount)
+int RingBuffer_read(RingBuffer *buffer, char *target,  int amount)
 {
     check_debug(amount <= RingBuffer_available_data(buffer),
             "Not enough in the buffer: has %d, needs %d",
@@ -80,7 +83,4 @@ bstring RingBuffer_gets(RingBuffer *buffer, int amount)
     return result;
 error:
     return NULL;
-}
-int main(){
-    printf("test\n");
 }

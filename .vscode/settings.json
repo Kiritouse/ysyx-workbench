@@ -3,6 +3,7 @@
         "type_traits": "cpp",
         "system_error": "cpp",
         "list_algos.h": "c",
-        "assert.h": "c"
+        "assert.h": "c",
+        "string_view": "cpp"
     }
 }

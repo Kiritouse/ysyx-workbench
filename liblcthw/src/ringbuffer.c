@@ -32,7 +32,7 @@ int RingBuffer_write(RingBuffer *buffer, char *data, int length)
     if(RingBuffer_available_data(buffer) == 0) { 
         buffer->start = buffer->end = 0;
     }
-    //TODO:这里明天需要修改一下，因为没有做到end的回环
+    
     check(length <= RingBuffer_available_space(buffer),
             "Not enough space: %d request, %d available",
             RingBuffer_available_data(buffer), length);

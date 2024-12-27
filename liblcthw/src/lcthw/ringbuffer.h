@@ -11,6 +11,7 @@ typedef struct {
 } RingBuffer;
 
 RingBuffer *RingBuffer_create(int length);
+RingBuffer *RingBuffer_create_posix(int length);
 
 void RingBuffer_destroy(RingBuffer *buffer);
 

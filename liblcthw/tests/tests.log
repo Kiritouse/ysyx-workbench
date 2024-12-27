@@ -1,18 +1,22 @@
-DEBUG tests/ringbuffer_tests.c:40: ----- RUNNING: ./tests/ringbuffer_tests
-DEBUG tests/ringbuffer_tests.c:31: 
+DEBUG tests/ringbuffer_tests.c:79: ----- RUNNING: ./tests/ringbuffer_tests
+DEBUG tests/ringbuffer_tests.c:56: 
 ----- test_ringbuffer_create
-DEBUG tests/ringbuffer_tests.c:32: 
+DEBUG tests/ringbuffer_tests.c:57: 
 ----- test_ringbuffer_write
-DEBUG tests/ringbuffer_tests.c:33: 
+DEBUG tests/ringbuffer_tests.c:58: 
 ----- test_ringbuffer_read
-DEBUG tests/ringbuffer_tests.c:59: ----- RUNNING: ./tests/ringbuffer_tests
-DEBUG tests/ringbuffer_tests.c:50: 
------ test_ringbuffer_create
-DEBUG tests/ringbuffer_tests.c:51: 
------ test_ringbuffer_write
-DEBUG tests/ringbuffer_tests.c:52: 
------ test_ringbuffer_read
-DEBUG tests/ringbuffer_tests.c:53: 
+DEBUG tests/ringbuffer_tests.c:59: 
 ----- test_ringbuffer_boundary_conditions
-DEBUG src/ringbuffer.c:51: Not enough in the buffer: has -1, needs 20
-[ERROR] (tests/ringbuffer_tests.c:38: errno: None) Failed to read data from ringbuffer.
+DEBUG src/ringbuffer.c:89: Not enough in the buffer: has -1, needs 20
+[ERROR] (tests/ringbuffer_tests.c:44: errno: None) Failed to read data from ringbuffer.
+DEBUG tests/ringbuffer_tests.c:79: ----- RUNNING: ./tests/ringbuffer_tests
+DEBUG tests/ringbuffer_tests.c:56: 
+----- test_ringbuffer_create
+DEBUG tests/ringbuffer_tests.c:57: 
+----- test_ringbuffer_write
+DEBUG tests/ringbuffer_tests.c:58: 
+----- test_ringbuffer_read
+DEBUG tests/ringbuffer_tests.c:59: 
+----- test_ringbuffer_boundary_conditions
+DEBUG src/ringbuffer.c:89: Not enough in the buffer: has -1, needs 20
+[ERROR] (tests/ringbuffer_tests.c:44: errno: None) Failed to read data from ringbuffer.

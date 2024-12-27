@@ -5,6 +5,10 @@
 #include <string.h>
 #include "lcthw/dbg.h"
 #include "lcthw/ringbuffer.h"
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 RingBuffer *RingBuffer_create(int length)
 {
     RingBuffer *buffer = calloc(1, sizeof(RingBuffer));
@@ -14,6 +18,39 @@ RingBuffer *RingBuffer_create(int length)
     buffer->buffer = calloc(buffer->length, 1);
 
     return buffer;
+}
+RingBuffer *RingBuffer_create_posix(int length)
+{
+    RingBuffer *buffer = calloc(1, sizeof(RingBuffer));
+    check_mem(buffer);
+
+    buffer->length = length + 1;
+    buffer->start = 0;
+    buffer->end = 0;
+
+    int fd = shm_open("/ringbuffer_shm", O_CREAT | O_RDWR, 0600);
+    check(fd != -1, "Failed to open shm.");
+
+    int rc = ftruncate(fd, buffer->length);
+    check(rc == 0, "Failed to truncate shm.");
+
+    void *map = mmap(NULL, buffer->length * 2, PROT_READ | PROT_WRITE,
+                     MAP_SHARED, fd, 0);
+    check(map != MAP_FAILED, "Failed to mmap.");
+
+    // Map second half (mirror)
+    void *map2 = mmap(map + buffer->length, buffer->length, PROT_READ | PROT_WRITE,
+                      MAP_SHARED | MAP_FIXED, fd, 0);
+    check(map2 != MAP_FAILED, "Failed to mmap second half.");
+
+    buffer->buffer = map;
+    close(fd);
+
+    return buffer;
+error:
+    if(fd >= 0) close(fd);
+    if(buffer) free(buffer);
+    return NULL;
 }
 
 void RingBuffer_destroy(RingBuffer *buffer)

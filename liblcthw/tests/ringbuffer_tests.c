@@ -3,10 +3,16 @@
 #include <assert.h>
 #include <string.h>
 #include <time.h>
-
+clock_t start, end;
+double cpu_time_used;
 static RingBuffer *ringbuffer = NULL;
 char*test_ringbuffer_create(){
     ringbuffer = RingBuffer_create(20);
+    mu_assert(ringbuffer != NULL, "Failed to create ringbuffer.");
+    return NULL;
+}
+char*test_ringbuffer_create_posix(){
+    ringbuffer = RingBuffer_create_posix(20);
     mu_assert(ringbuffer != NULL, "Failed to create ringbuffer.");
     return NULL;
 }
@@ -46,12 +52,26 @@ char *test_ringbuffer_boundary_conditions() {
 }
 char *all_tests() {
     mu_suite_start();
-
+     start = clock();
     mu_run_test(test_ringbuffer_create);
     mu_run_test(test_ringbuffer_write);
     mu_run_test(test_ringbuffer_read);
     mu_run_test(test_ringbuffer_boundary_conditions);
-    // mu_run_test(test_ringbuffer_overflow);
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("no posix took %f seconds to execute n", cpu_time_used);
+    RingBuffer_destroy(ringbuffer);
+
+    // start = clock();
+    // mu_run_test(test_ringbuffer_create_posix);
+    // mu_run_test(test_ringbuffer_write);
+    // mu_run_test(test_ringbuffer_read);
+    // mu_run_test(test_ringbuffer_boundary_conditions);
+    // end = clock();
+    // cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    // printf("posix took %f seconds to execute n", cpu_time_used);
+
+    
 
     return NULL;
 }

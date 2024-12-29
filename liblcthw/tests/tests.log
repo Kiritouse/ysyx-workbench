@@ -1,22 +1,118 @@
-DEBUG tests/ringbuffer_tests.c:79: ----- RUNNING: ./tests/ringbuffer_tests
-DEBUG tests/ringbuffer_tests.c:56: 
+DEBUG tests/ringbuffer_tests.c:131: ----- RUNNING: ./tests/ringbuffer_tests
+DEBUG tests/ringbuffer_tests.c:106: 
 ----- test_ringbuffer_create
-DEBUG tests/ringbuffer_tests.c:57: 
+DEBUG tests/ringbuffer_tests.c:108: 
 ----- test_ringbuffer_write
-DEBUG tests/ringbuffer_tests.c:58: 
+DEBUG tests/ringbuffer_tests.c:109: 
 ----- test_ringbuffer_read
-DEBUG tests/ringbuffer_tests.c:59: 
------ test_ringbuffer_boundary_conditions
-DEBUG src/ringbuffer.c:89: Not enough in the buffer: has -1, needs 20
-[ERROR] (tests/ringbuffer_tests.c:44: errno: None) Failed to read data from ringbuffer.
-DEBUG tests/ringbuffer_tests.c:79: ----- RUNNING: ./tests/ringbuffer_tests
-DEBUG tests/ringbuffer_tests.c:56: 
+DEBUG tests/ringbuffer_tests.c:116: 
+----- test_ringbuffer_create_posix
+DEBUG tests/ringbuffer_tests.c:118: 
+----- test_ringbuffer_write_posix
+DEBUG tests/ringbuffer_tests.c:119: 
+----- test_ringbuffer_read_posix
+free(): invalid pointer
+Aborted
+DEBUG tests/ringbuffer_tests.c:131: ----- RUNNING: ./tests/ringbuffer_tests
+DEBUG tests/ringbuffer_tests.c:106: 
 ----- test_ringbuffer_create
-DEBUG tests/ringbuffer_tests.c:57: 
+DEBUG tests/ringbuffer_tests.c:108: 
 ----- test_ringbuffer_write
-DEBUG tests/ringbuffer_tests.c:58: 
+DEBUG tests/ringbuffer_tests.c:109: 
 ----- test_ringbuffer_read
-DEBUG tests/ringbuffer_tests.c:59: 
------ test_ringbuffer_boundary_conditions
-DEBUG src/ringbuffer.c:89: Not enough in the buffer: has -1, needs 20
-[ERROR] (tests/ringbuffer_tests.c:44: errno: None) Failed to read data from ringbuffer.
+DEBUG tests/ringbuffer_tests.c:116: 
+----- test_ringbuffer_create_posix
+DEBUG tests/ringbuffer_tests.c:118: 
+----- test_ringbuffer_write_posix
+DEBUG tests/ringbuffer_tests.c:119: 
+----- test_ringbuffer_read_posix
+free(): invalid pointer
+Aborted
+DEBUG tests/ringbuffer_tests.c:131: ----- RUNNING: ./tests/ringbuffer_tests
+DEBUG tests/ringbuffer_tests.c:106: 
+----- test_ringbuffer_create
+DEBUG tests/ringbuffer_tests.c:108: 
+----- test_ringbuffer_write
+DEBUG tests/ringbuffer_tests.c:109: 
+----- test_ringbuffer_read
+DEBUG tests/ringbuffer_tests.c:131: ----- RUNNING: ./tests/ringbuffer_tests
+DEBUG tests/ringbuffer_tests.c:106: 
+----- test_ringbuffer_create
+DEBUG tests/ringbuffer_tests.c:108: 
+----- test_ringbuffer_write
+DEBUG tests/ringbuffer_tests.c:109: 
+----- test_ringbuffer_read
+DEBUG tests/ringbuffer_tests.c:125: 
+----- perform_random_op
+free(): invalid pointer
+Aborted
+DEBUG tests/ringbuffer_tests.c:131: ----- RUNNING: ./tests/ringbuffer_tests
+DEBUG tests/ringbuffer_tests.c:106: 
+----- test_ringbuffer_create
+DEBUG tests/ringbuffer_tests.c:108: 
+----- test_ringbuffer_write
+DEBUG tests/ringbuffer_tests.c:109: 
+----- test_ringbuffer_read
+DEBUG tests/ringbuffer_tests.c:116: 
+----- test_ringbuffer_create_posix
+DEBUG tests/ringbuffer_tests.c:118: 
+----- test_ringbuffer_write_posix
+DEBUG tests/ringbuffer_tests.c:119: 
+----- test_ringbuffer_read_posix
+free(): invalid pointer
+Aborted
+DEBUG tests/ringbuffer_tests.c:131: ----- RUNNING: ./tests/ringbuffer_tests
+DEBUG tests/ringbuffer_tests.c:106: 
+----- test_ringbuffer_create
+DEBUG tests/ringbuffer_tests.c:108: 
+----- test_ringbuffer_write
+DEBUG tests/ringbuffer_tests.c:109: 
+----- test_ringbuffer_read
+DEBUG tests/ringbuffer_tests.c:131: ----- RUNNING: ./tests/ringbuffer_tests
+DEBUG tests/ringbuffer_tests.c:106: 
+----- test_ringbuffer_create
+DEBUG tests/ringbuffer_tests.c:108: 
+----- test_ringbuffer_write
+DEBUG tests/ringbuffer_tests.c:109: 
+----- test_ringbuffer_read
+DEBUG tests/ringbuffer_tests.c:116: 
+----- test_ringbuffer_create_posix
+DEBUG tests/ringbuffer_tests.c:131: ----- RUNNING: ./tests/ringbuffer_tests
+DEBUG tests/ringbuffer_tests.c:106: 
+----- test_ringbuffer_create
+DEBUG tests/ringbuffer_tests.c:108: 
+----- test_ringbuffer_write
+DEBUG tests/ringbuffer_tests.c:109: 
+----- test_ringbuffer_read
+DEBUG tests/ringbuffer_tests.c:116: 
+----- test_ringbuffer_create_posix
+DEBUG tests/ringbuffer_tests.c:118: 
+----- test_ringbuffer_write_posix
+DEBUG tests/ringbuffer_tests.c:131: ----- RUNNING: ./tests/ringbuffer_tests
+DEBUG tests/ringbuffer_tests.c:106: 
+----- test_ringbuffer_create
+DEBUG tests/ringbuffer_tests.c:108: 
+----- test_ringbuffer_write
+DEBUG tests/ringbuffer_tests.c:109: 
+----- test_ringbuffer_read
+DEBUG tests/ringbuffer_tests.c:116: 
+----- test_ringbuffer_create_posix
+DEBUG tests/ringbuffer_tests.c:118: 
+----- test_ringbuffer_write_posix
+DEBUG tests/ringbuffer_tests.c:119: 
+----- test_ringbuffer_read_posix
+DEBUG tests/ringbuffer_tests.c:131: ----- RUNNING: ./tests/ringbuffer_tests
+DEBUG tests/ringbuffer_tests.c:106: 
+----- test_ringbuffer_create
+DEBUG tests/ringbuffer_tests.c:108: 
+----- test_ringbuffer_write
+DEBUG tests/ringbuffer_tests.c:109: 
+----- test_ringbuffer_read
+DEBUG tests/ringbuffer_tests.c:116: 
+----- test_ringbuffer_create_posix
+DEBUG tests/ringbuffer_tests.c:118: 
+----- test_ringbuffer_write_posix
+DEBUG tests/ringbuffer_tests.c:119: 
+----- test_ringbuffer_read_posix
+DEBUG tests/ringbuffer_tests.c:125: 
+----- perform_random_op

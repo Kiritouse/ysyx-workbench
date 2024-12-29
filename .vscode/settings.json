@@ -4,6 +4,12 @@
         "system_error": "cpp",
         "list_algos.h": "c",
         "assert.h": "c",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "mman.h": "c",
+        "unistd.h": "c",
+        "types.h": "c",
+        "array": "c",
+        "initializer_list": "c",
+        "utility": "c"
     }
 }

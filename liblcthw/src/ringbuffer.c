@@ -12,7 +12,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <inttypes.h>
-
+ static int segcnt = 0;
 static inline uint64_t minPageSize(size_t length) {
     size_t _size = length;
     const long pagesize = sysconf(_SC_PAGESIZE);
@@ -42,14 +42,14 @@ RingBuffer *RingBuffer_create(int length)
 }
 rng_buf_t *rng_buf_create_posix(int length)
 {
+   segcnt++;
     const uint64_t size = minPageSize(length);
 
     //获取页面的整数倍的大小
     int shm_fd =-1;
-    int seg_counter = rand();
-    char seg_name[4096] = "";
+    char seg_name[30] = "";
     while(1){
-        sprintf(seg_name, "/ringbuffer-%d-%d", (int)getpid(), seg_counter);
+        sprintf(seg_name, "/ringbuffer-%d-%d", (int)getpid(),segcnt);
         shm_fd = shm_open(seg_name, O_RDWR | O_CREAT | O_EXCL, 0600);
     // 获取文件描述符指向共享内存文件
         if(shm_fd != -1){

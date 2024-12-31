@@ -70,7 +70,7 @@ char* test_ringbuffer_read_posix(){
     return NULL;
 }
 char* perform_random_op(){
-    rng_buf_t *_rng_buf = rng_buf_create_posix(40);
+    rng_buf_t *_rng_buf = rng_buf_create_posix(40960);
     RingBuffer* _ringbuffer = RingBuffer_create(_rng_buf->size);//保证字节数一致
     //生成随机数据，写入两个buffer
     unsigned char rand_data[_rng_buf->size-1];
@@ -96,7 +96,7 @@ char* perform_random_op(){
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     printf("no posix took %f seconds to execute -- test \n", cpu_time_used);
     RingBuffer_destroy(_ringbuffer);
-    rng_buf_destroy(_rng_buf);
+    rng_buf_destroy(&_rng_buf);
 
 
 
@@ -120,7 +120,7 @@ char *all_tests() {
     // //end = clock();
     // //cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     // //printf("posix took %f seconds to execute \n", cpu_time_used);
-    rng_buf_destroy(rng_buf_posix);
+    rng_buf_destroy(&rng_buf_posix);
 
     mu_run_test(perform_random_op);
 

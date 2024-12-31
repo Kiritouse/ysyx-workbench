@@ -1,4 +1,4 @@
-VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log"
+VALGRIND="valgrind --dsymutil=yes --tool=callgrind --log-file=/tmp/valgrind-%p.log"
 for i in tests/*_tests
 do
     if test -f $i #检查是否存在

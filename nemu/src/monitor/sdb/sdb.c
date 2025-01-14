@@ -66,13 +66,18 @@ static int cmd_si(char*args){ //step
     if(args==NULL) step = 1;
     else
       sscanf(args,"%d",&step);
-    cpu_exec(step);
+
+    if(step<0){
+      printf("invalid args\n");
+    }
+    else
+      cpu_exec(step);
     return 0;
 } 
 
 static int cmd_info(char*args){
   if(args==NULL){
-    printf("No args\n");
+    printf("No args,please input the agrs r or w\n");
   }
   else if(strcmp(args,"r")==0){ //打印寄存器状态
     isa_reg_display();
@@ -175,7 +180,7 @@ static int cmd_help(char *args);
 static struct {
   const char *name;
   const char *description;
-  int (*handler) (char *);
+  int (*handler) (char *); //函数指针，参数是一个char*，返回值是int
 } cmd_table [] = {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },

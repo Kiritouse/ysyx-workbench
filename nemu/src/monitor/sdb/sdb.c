@@ -66,7 +66,10 @@ static int cmd_si(char*args){ //step
     if(args==NULL) step = 1;
     else
       sscanf(args,"%d",&step);
+    
+    if(step>0)
     cpu_exec(step);
+    else printf("step must be positive\n");
     return 0;
 } 
 
@@ -175,7 +178,7 @@ static int cmd_help(char *args);
 static struct {
   const char *name;
   const char *description;
-  int (*handler) (char *); //函数指针，参数是一个char*，返回值是int
+  int (*handler) (char *);
 } cmd_table [] = {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },

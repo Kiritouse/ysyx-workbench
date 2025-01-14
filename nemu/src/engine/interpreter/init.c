@@ -21,7 +21,7 @@ void engine_start() {
 #ifdef CONFIG_TARGET_AM
   cpu_exec(-1);
 #else
-  /* Receive commands from user. */ //第一个客户程序，运行gdb
+  /* Receive commands from user. */
   sdb_mainloop();
 #endif
 }

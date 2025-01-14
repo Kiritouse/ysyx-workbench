@@ -73,7 +73,6 @@ static void exec_once(Decode *s, vaddr_t pc) {
 //扫描所有监视点
 #ifdef CONFIG_WATCHPOINT
   difftest_wp();
-
 #endif
 }
 

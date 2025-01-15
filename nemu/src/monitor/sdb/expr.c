@@ -86,7 +86,6 @@ bool Push(MyStack *S,ElemType e);//将元素e压入栈
 bool Pop(MyStack *S,ElemType *x);//出栈
 bool GetTop(MyStack *S,int *x);//获取当前栈顶元素 
 bool StackEmpty(MyStack *S);//栈判空 
-bool BraketCheck(char a[],int length);//括号匹配 
 
 
 void init_regex() {

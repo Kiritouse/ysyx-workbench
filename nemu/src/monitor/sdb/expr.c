@@ -239,8 +239,8 @@ uint32_t find_op(int32_t p,int32_t q){ //TODO:
       Pop(&S, &topElem); // 右括号出栈
     } else if (StackEmpty(&S)) { // 只在栈为空时检查运算符
        if(tokens[i].type==TK_NEGATIVE||tokens[i].type==TK_NOT||tokens[i].type==TK_DEREF){
-        prior=max(prior,2);
-        if(pos[2]==-1)pos[2]=i;
+        prior=max(prior,2);//更新优先级，数字越大，定义的main_op的优先级越高，但实际上的运算优先级越低
+        if(pos[2]==-1)pos[2]=i;//记录第一次出现的位置
        }
      else  if (tokens[i].type == '*' || tokens[i].type == '/') {
         prior = max(prior, 3);

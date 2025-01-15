@@ -58,21 +58,21 @@ static void gen_rand_expr() { //似乎存在栈溢出
   depth++;
   switch(choose(3)){
     case 0: //处理生成数字的情况
-      if(len_buf==0){
+      if(len_buf==0){ //保证第一个字符不是运算符或者其他符号
         gen_num(); 
       }
       else{
         if(buf[len_buf-1]!=')'&&
-        len_buf+7<sizeof(buf))
+        len_buf+7<sizeof(buf)) //因为右括号后不能直接跟数字，因此，如果上一个不是右括号，那么就可以直接生成数字
         gen_num();
         else gen_rand_expr();
       }
       break;
-    case 1: 
-      if(len_buf==0){
+    case 1://生成(...)的情况
+      if(len_buf==0){//如果里面还没有字符，那么可以生成( 
         buf[len_buf++] = '(';
         gen_rand_expr();
-        if(len_buf+3>=sizeof(buf)){
+        if(len_buf+3>=sizeof(buf)){ //留出一定空间，防止莫名其妙的栈溢出
           iserr = 1;
           depth--;
           return;
@@ -80,16 +80,17 @@ static void gen_rand_expr() { //似乎存在栈溢出
         buf[len_buf++] = ')';
       }
       else{
-        if (buf[0] != '\0' &&  strchr("+-*/", buf[len_buf-1])
+        //生成类似  ... op (...) 
+        if (buf[0] != '\0' &&  strchr("+-*/", buf[len_buf-1])  //如果上一个位置出现的是符号op
           &&len_buf+3<sizeof(buf)){   
           buf[len_buf++] = '(';
-          gen_rand_expr(); //TODO：如何保证添加右括号的时候不会有缓冲区溢出的问题？
+          gen_rand_expr(); 
           if(len_buf+3>=sizeof(buf)){
             iserr= 1;
             depth--;
             return;
           }
-          buf[len_buf++] = ')'; //这里有问题，前面生成了左括号后，如果这里生成右括号有存在溢出的风险
+          buf[len_buf++] = ')';
         }
         else gen_rand_expr();
       }

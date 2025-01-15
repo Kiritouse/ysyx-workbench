@@ -142,9 +142,9 @@ static int cmd_test_expr(char*args){ //test file_path
     if(input_file==NULL){
       printf("file open fail,please check the path of file");
     }
-    char line_data[1024*4] = {};
-      unsigned int cor_val = 0;
-    char buf[1024*4] = {};
+    char line_data[1024*4] = {};//读取一整行
+    unsigned int correct_val = 0;
+    char buf[1024*4] = {};//存储表达式
 
     for(int i = 0;i<100;i++){
       memset(line_data,0,sizeof(line_data));
@@ -158,14 +158,16 @@ static int cmd_test_expr(char*args){ //test file_path
         printf("read correct val error");
         continue;
       }
-      cor_val = atoi(token);
-      while((token = strtok(NULL,"\n"))){
-        strcat(buf,token);
-      }
-      printf("value : %u, express: %s\n",cor_val,buf);
+      correct_val = atoi(token);
+      // while((token = strtok(NULL,"\n"))){
+      //   strcat(buf,token);
+      // }
+      token = strtok(NULL,"\n");
+      strcat(buf,token);
+      printf("value : %u, express: %s\n",correct_val,buf);
       bool success = true;
       unsigned res = (unsigned int)expr(buf,&success);
-      if(res==cor_val)right_cnt++;
+      if(res==correct_val)right_cnt++;
     }
     printf("test 100 expressions,the accuracy is %d/100\n",right_cnt);
     fclose(input_file);

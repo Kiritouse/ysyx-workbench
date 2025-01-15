@@ -140,8 +140,7 @@ int main(int argc, char *argv[]) {
       i--; 
       continue;
     }
-    fseek(fp_err,0,SEEK_END);
-
+    fseek(fp_err,0,SEEK_END);//将文件指针移动到文件末尾
     //获取错误信息文件的大小
     file_size = ftell(fp_err);
     fclose(fp_err);
@@ -152,13 +151,11 @@ int main(int argc, char *argv[]) {
     }
     fp = popen("/tmp/.expr", "r");
     assert(fp != NULL);
-
     int result;
-    ret = fscanf(fp, "%d", &result);
+    ret = fscanf(fp, "%d", &result);//获取程序运行的正确的结果
     pclose(fp);
 
     printf("%u %s\n", result, buf);
-    //printf("len_buf = %d\n",len_buf);
   }
   return 0;
 }

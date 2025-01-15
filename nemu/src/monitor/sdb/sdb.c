@@ -146,6 +146,7 @@ static int cmd_test_expr(char*args){ //test file_path
     unsigned int correct_val = 0;
     char buf[1024*4] = {};//存储表达式
 
+
     for(int i = 0;i<100;i++){
       memset(line_data,0,sizeof(line_data));
       memset(buf,0,sizeof(buf));
@@ -159,9 +160,6 @@ static int cmd_test_expr(char*args){ //test file_path
         continue;
       }
       correct_val = atoi(token);
-      // while((token = strtok(NULL,"\n"))){
-      //   strcat(buf,token);
-      // }
       token = strtok(NULL,"\n");
       strcat(buf,token);
       printf("value : %u, express: %s\n",correct_val,buf);
@@ -172,7 +170,6 @@ static int cmd_test_expr(char*args){ //test file_path
     printf("test 100 expressions,the accuracy is %d/100\n",right_cnt);
     fclose(input_file);
     return 0;
-
 }
 
 static int cmd_help(char *args);

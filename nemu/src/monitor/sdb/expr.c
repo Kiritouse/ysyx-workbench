@@ -194,6 +194,7 @@ static bool make_token(char *e) {
             tokens[nr_token].type = TK_REG;
             strncpy(tokens[nr_token].str,substr_start+1,substr_len-1);//丢掉$
             *(tokens[nr_token++].str+substr_len)='\0';
+            break;//麻了，竟然这里忘记加了
           default: TODO();
         }
         break;
@@ -289,26 +290,35 @@ int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束
     assert(0);
     return -1;
   }
-  else if(p==q){
+  else if(p==q){ //完全匹配上
+    if(tokens[p].type==TK_NUM){
     return atoi(tokens[p].str);
+    }
+    else if(tokens[p].type==TK_REG){
+      bool success = false;
+      int32_t ans = isa_reg_str2val(tokens[p].str,&success);
+      if(success){
+        return ans;
+      }
+      else{
+        printf("No such reg\n");
+        assert(0);
+      }
+    }
   }
   else if(check_parentheses(p,q)){
     return eval(p+1,q-1);
   }
-  else{ //处理一些特殊的符号，例如负数，指针解引用
+  else{ //处理一些特殊的符号，例如负数，指针解引用，因为这个这两个符号得和数字和其他一起处理
     if(p+1==q&&tokens[p].type==TK_NEGATIVE){
       return -atoi(tokens[q].str);
     }
-    else if(tokens[p].type==TK_DEREF){ //p+1跟了一个16进制的地址
+    else if(p+1==q&&tokens[p].type==TK_DEREF){ //p+1跟了一个16进制的地址
       int32_t addr = eval(p+1,q);
       printf("%x\n",addr);
       return vaddr_read(addr,4);
     }
-    else if(tokens[p].type==TK_REG){
-      printf("还没有实现TK_REG的eval\n");
-    }
   }
-
     int32_t op = find_op(p,q);
     int32_t left_ans = eval(p,op-1);
 

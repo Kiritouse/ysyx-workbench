@@ -322,8 +322,8 @@ int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束
     }
     else if(p+1==q&&tokens[p].type==TK_DEREF){ //p+1跟了一个16进制的地址
       int32_t addr = eval(p+1,q);//计算出地址
-      printf("%x\n",addr);
-      return vaddr_read(addr,4);
+      printf("adress match %#x\n",addr);
+      return vaddr_read(addr,4);//读取4个字节，一个字节8位，所以刚好是32位
     }
   }
     int32_t op = find_op(p,q);

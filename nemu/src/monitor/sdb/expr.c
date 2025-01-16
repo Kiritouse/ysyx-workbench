@@ -58,7 +58,6 @@ static struct rule {
   {"!=",TK_NEQ},
   {"&&",TK_AND},
   {"\\|\\|",TK_OR},
-  //{"\\*",TK_DEREF},//指针解引用
   {"\\$(0|ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])"},//riscv32 ,匹配寄存器,
   {"0x[0-9A-Fa-f]+",TK_HEX},//匹配16进制
 
@@ -330,7 +329,7 @@ int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束
         assert(right_ans!=0);
         return left_ans/right_ans;
       break;
-      case TK_EQ:
+      case TK_EQ: //等于运算
         return left_ans==right_ans;
       break;
       case TK_NEQ:

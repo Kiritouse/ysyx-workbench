@@ -81,6 +81,7 @@ bool free_wp(int _NO){//将index为NO的从head链表中删除，并且添加到
   }
   if(head->NO == _NO){
     head = head->next;
+    return  true;
   }
   WP* p_head = head;
   WP* node = NULL;

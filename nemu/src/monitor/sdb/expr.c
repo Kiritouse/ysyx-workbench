@@ -305,6 +305,13 @@ int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束
         assert(0);
       }
     }
+    else if(tokens[p].type==TK_HEX){
+      return strtol(tokens[p].str,NULL,16);
+    }
+    else{
+      printf("No such type match in function eval when p==q\n");
+      assert(0);
+    }
   }
   else if(check_parentheses(p,q)){
     return eval(p+1,q-1);
@@ -314,7 +321,7 @@ int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束
       return -atoi(tokens[q].str);
     }
     else if(p+1==q&&tokens[p].type==TK_DEREF){ //p+1跟了一个16进制的地址
-      int32_t addr = eval(p+1,q);
+      int32_t addr = eval(p+1,q);//计算出地址
       printf("%x\n",addr);
       return vaddr_read(addr,4);
     }

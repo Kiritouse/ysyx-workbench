@@ -105,16 +105,24 @@ static int cmd_p(char*args){
   return 0;
 }
 
-static int cmd_x(char*args){
-  char* N_byte = strtok(NULL," ");//N个4字节
-  char*address_str = strtok(NULL," ");//十六进制地址，0x开头
+static int cmd_x(char *args) {
+  char *N_byte = strtok(NULL, " "); // N个4字节
+  char *address_str = strtok(NULL, " "); // 十六进制地址，0x开头
+  int N;
+  if (sscanf(N_byte, "%d", &N) != 1) {
+    printf("Invalid number of bytes: %s\n", N_byte);
+    return -1;
+  }
 
-  int N = sscanf(N_byte,"%d",&N);
   vaddr_t address;
-  sscanf(address_str,"%x",&address);
-  for(int i = 0;i<N;i++){
-    printf("0x%08x: 0x%08x\n",address,vaddr_read(address,4));
-    address+=4;
+  if (sscanf(address_str, "%x", &address) != 1) {
+    printf("Invalid address: %s\n", address_str);
+    return -1;
+  }
+
+  for (int i = 0; i < N; i++) {
+    printf("0x%08x: 0x%08x\n", address, vaddr_read(address, 4));
+    address += 4;
   }
   return 0;
 }

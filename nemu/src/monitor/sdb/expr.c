@@ -58,7 +58,7 @@ static struct rule {
   {"!=",TK_NEQ},
   {"&&",TK_AND},
   {"\\|\\|",TK_OR},
-  {"\\$(0|ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])"},//riscv32 ,匹配寄存器,
+  {"\\$(0|ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])",TK_REG},//riscv32 ,匹配寄存器,
   {"0x[0-9A-Fa-f]+",TK_HEX},//匹配16进制
 
 };

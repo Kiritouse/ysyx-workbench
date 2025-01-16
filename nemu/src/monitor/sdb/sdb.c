@@ -81,7 +81,6 @@ static int cmd_info(char*args){
     isa_reg_display();
   }
   else if(strcmp(args,"w")==0){ //打印监视点信息
-    printf("打印监视点信息暂时还没有实现\n");
     display_wp();
   }
   return 0;

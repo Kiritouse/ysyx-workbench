@@ -58,7 +58,7 @@ static struct rule {
   {"!=",TK_NEQ},
   {"&&",TK_AND},
   {"\\|\\|",TK_OR},
-  {"\\$(0|ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])",TK_REG},//riscv32 ,匹配寄存器,
+  {"\\$($0|ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])",TK_REG},//riscv32 ,匹配寄存器,
   {"0x[0-9A-Fa-f]+",TK_HEX},//匹配16进制
 
 };
@@ -321,10 +321,28 @@ int32_t eval(int32_t p,int32_t q){  //p,q指示表达式的开始位置和结束
       return -atoi(tokens[q].str);
     }
     else if(p+1==q&&tokens[p].type==TK_DEREF){ //p+1跟了一个16进制的地址
-      int32_t addr = eval(p+1,q);//计算出地址
-      printf("adress match %#x\n",addr);
-      return vaddr_read(addr,4);//读取4个字节，一个字节8位，所以刚好是32位
+      if(tokens[q].type==TK_HEX){
+        int32_t addr = eval(p+1,q);//计算出地址
+        printf("adress match %#x\n",addr);
+        return vaddr_read(addr,4);//读取4个字节，一个字节8位，所以刚好是32位
+      }
+      else if(tokens[q].type==TK_REG){
+        bool success = false;
+        int32_t addr = isa_reg_str2val(tokens[q].str,&success);
+        if(success){
+          return vaddr_read(addr,4);
+        }
+        else{
+          printf("No such reg,here some errors\n");
+          assert(0);
+        }
+      }
+      else{
+        printf("No such type match in function eval when p+1==q\n");
+        assert(0);
+      }
     }
+    
   }
     int32_t op = find_op(p,q);
     int32_t left_ans = eval(p,op-1);

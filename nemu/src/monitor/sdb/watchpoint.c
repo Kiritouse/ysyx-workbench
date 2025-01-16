@@ -114,7 +114,6 @@ void display_wp(){
     printf("%-8d%-8s\n", p_head->NO, p_head->expr);
     p_head = p_head->next;
   }
-
 }
 
 void difftest_wp()

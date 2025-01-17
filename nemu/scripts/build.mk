@@ -55,3 +55,9 @@ $(BINARY):: $(OBJS) $(ARCHIVES)
 
 clean:
 	-rm -rf $(BUILD_DIR)
+
+count:
+	@echo "Total lines of code in .c and .h files:"
+	@find ./ -name '*.c' -o -name '*.h' | xargs wc -l | tail -n 1
+	@echo "Total lines of code excluding empty lines in .c and .h files:"
+	@find ./ -name '*.c' -o -name '*.h' | xargs grep -v '^\s*$$' | wc -l

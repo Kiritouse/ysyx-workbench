@@ -189,14 +189,13 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-  {"si","step n steps",cmd_si},
-   {"info","info r,Display all registers,info w display all watchpoints ",cmd_info},
-    {"x","x N address,Displays an offset of N bytes based on addressisplay the address",cmd_x},
-    {"p","p expr,it will calculate expr and print the answer of expr",cmd_p},
-    {"test","test file_path,test accu of eval function",cmd_test_expr},
-    {"w","w expr,set up a watchpoint",cmd_w},
-    {"d","d NO,delete a watchpoint",cmd_d},
-  /* TODO: Add more commands */
+  {"si","Step n steps",cmd_si},
+  { "info", "Display information: 'info r' for all registers, 'info w' for all watchpoints", cmd_info },
+  { "x", "Examine memory: 'x N address' displays N bytes starting from address", cmd_x },
+  { "p", "Evaluate expression: 'p expr' calculates and prints the value of expr", cmd_p },
+  { "test", "Test: 'test file_path' tests the accuracy of the eval function", cmd_test_expr },
+  { "w", "Set watchpoint: 'w expr' sets a watchpoint for expr", cmd_w },
+{ "d", "Delete watchpoint: 'd NO' deletes the watchpoint with number NO", cmd_d },  /* TODO: Add more commands */
 
 };
 

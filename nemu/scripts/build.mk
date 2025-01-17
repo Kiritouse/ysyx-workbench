@@ -45,7 +45,7 @@ $(OBJ_DIR)/%.o: %.cc
 
 # Some convenient rules
 
-.PHONY: app clean
+.PHONY: app clean count
 
 app: $(BINARY)
 
@@ -55,3 +55,19 @@ $(BINARY):: $(OBJS) $(ARCHIVES)
 
 clean:
 	-rm -rf $(BUILD_DIR)
+
+count:
+	@echo "Total lines of code in .c and .h files:"
+	@find ./ -name '*.c' -o -name '*.h' | xargs wc -l | tail -n 1
+	@echo "Total lines of code excluding empty lines in .c and .h files:"
+	@find ./ -name '*.c' -o -name '*.h' | xargs grep -v '^\s*$$' | wc -l
+	
+count_pa1:
+	@git checkout pa0
+	@echo "Lines of code before PA1:"
+	@find ./ -name '*.c' -o -name '*.h' | xargs wc -l | tail -n 1
+	@git checkout -
+	@echo "Lines of code after PA1:"
+	@find ./ -name '*.c' -o -name '*.h' | xargs wc -l | tail -n 1
+	@echo "Lines of code written in PA1:"
+	@echo $$(($(find ./ -name '*.c' -o -name '*.h' | xargs wc -l | tail -n 1 | awk '{print $$1}') - $(git checkout pa0 && find ./ -name '*.c' -o -name '*.h' | xargs wc -l | tail -n 1 | awk '{print $$1}') && git checkout -))

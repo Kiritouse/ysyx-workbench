@@ -191,7 +191,7 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
   {"si","Step n steps",cmd_si},
   { "info", "Display information: 'info r' for all registers, 'info w' for all watchpoints", cmd_info },
-  { "x", "Examine memory: 'x N address' displays N bytes starting from address", cmd_x },
+  { "x", "Examine memory: 'x N address' displays N*4bytes starting from address", cmd_x },
   { "p", "Evaluate expression: 'p expr' calculates and prints the value of expr", cmd_p },
   { "test", "Test: 'test file_path' tests the accuracy of the eval function", cmd_test_expr },
   { "w", "Set watchpoint: 'w expr' sets a watchpoint for expr", cmd_w },

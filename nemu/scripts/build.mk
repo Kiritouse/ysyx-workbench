@@ -69,7 +69,7 @@ count_pa1:
 	@cat /tmp/pa0_lines.txt
 	@git checkout -
 	@echo "Lines of code after PA1:"
-	@find ./ -name '*.c' -o -name z'*.h' | xargs wc -l | tail -n 1 > /tmp/pa1_lines.txt
+	@find ./ -name '*.c' -o -name '*.h' | xargs wc -l | tail -n 1 > /tmp/pa1_lines.txt
 	@cat /tmp/pa1_lines.txt
 	@echo "Lines of code written in PA1:"
 	@echo $$(($(cat /tmp/pa1_lines.txt | awk '{print $$1}') - $(cat /tmp/pa0_lines.txt | awk '{print $$1}')))

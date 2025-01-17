@@ -81,6 +81,7 @@ bool free_wp(int _NO){//将index为NO的从head链表中删除，并且添加到
   }
   if(head->NO == _NO){
     head = head->next;
+    return  true;
   }
   WP* p_head = head;
   WP* node = NULL;
@@ -114,7 +115,6 @@ void display_wp(){
     printf("%-8d%-8s\n", p_head->NO, p_head->expr);
     p_head = p_head->next;
   }
-
 }
 
 void difftest_wp()

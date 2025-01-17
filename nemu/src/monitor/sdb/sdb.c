@@ -66,7 +66,10 @@ static int cmd_si(char*args){ //step
     if(args==NULL) step = 1;
     else
       sscanf(args,"%d",&step);
+    
+    if(step>0)
     cpu_exec(step);
+    else printf("step must be positive\n");
     return 0;
 } 
 
@@ -78,7 +81,6 @@ static int cmd_info(char*args){
     isa_reg_display();
   }
   else if(strcmp(args,"w")==0){ //打印监视点信息
-    printf("打印监视点信息暂时还没有实现\n");
     display_wp();
   }
   return 0;
@@ -102,16 +104,24 @@ static int cmd_p(char*args){
   return 0;
 }
 
-static int cmd_x(char*args){
-  char* N_byte = strtok(NULL," ");//N个4字节
-  char*address_str = strtok(NULL," ");//十六进制地址，0x开头
+static int cmd_x(char *args) {
+  char *N_byte = strtok(NULL, " "); // N个4字节
+  char *address_str = strtok(NULL, " "); // 十六进制地址，0x开头
+  int N;
+  if (sscanf(N_byte, "%d", &N) != 1) {
+    printf("Invalid number of bytes: %s\n", N_byte);
+    return -1;
+  }
 
-  int N = sscanf(N_byte,"%d",&N);
   vaddr_t address;
-  sscanf(address_str,"%x",&address);
-  for(int i = 0;i<N;i++){
-    printf("0x%08x: 0x%08x\n",address,vaddr_read(address,4));
-    address+=4;
+  if (sscanf(address_str, "%x", &address) != 1) {
+    printf("Invalid address: %s\n", address_str);
+    return -1;
+  }
+
+  for (int i = 0; i < N; i++) {
+    printf("0x%08x: 0x%08x\n", address, vaddr_read(address, 4));
+    address += 4;
   }
   return 0;
 }
@@ -139,9 +149,10 @@ static int cmd_test_expr(char*args){ //test file_path
     if(input_file==NULL){
       printf("file open fail,please check the path of file");
     }
-    char line_data[1024*4] = {};
-      unsigned int cor_val = 0;
-    char buf[1024*4] = {};
+    char line_data[1024*4] = {};//读取一整行
+    unsigned int correct_val = 0;
+    char buf[1024*4] = {};//存储表达式
+
 
     for(int i = 0;i<100;i++){
       memset(line_data,0,sizeof(line_data));
@@ -155,19 +166,17 @@ static int cmd_test_expr(char*args){ //test file_path
         printf("read correct val error");
         continue;
       }
-      cor_val = atoi(token);
-      while((token = strtok(NULL,"\n"))){
-        strcat(buf,token);
-      }
-      printf("value : %u, express: %s\n",cor_val,buf);
+      correct_val = atoi(token);
+      token = strtok(NULL,"\n");
+      strcat(buf,token);
+      printf("value : %u, express: %s\n",correct_val,buf);
       bool success = true;
       unsigned res = (unsigned int)expr(buf,&success);
-      if(res==cor_val)right_cnt++;
+      if(res==correct_val)right_cnt++;
     }
     printf("test 100 expressions,the accuracy is %d/100\n",right_cnt);
     fclose(input_file);
     return 0;
-
 }
 
 static int cmd_help(char *args);

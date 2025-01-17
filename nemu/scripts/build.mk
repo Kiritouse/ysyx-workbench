@@ -63,13 +63,20 @@ count:
 	@find ./ -name '*.c' -o -name '*.h' | xargs grep -v '^\s*$$' | wc -l
 	
 count_pa1:
-	@git checkout pa0
-	@echo "Lines of code before PA1:"
-	@find ./ -name '*.c' -o -name '*.h' | xargs wc -l | tail -n 1 > /tmp/pa0_lines.txt
-	@cat /tmp/pa0_lines.txt
-	@git checkout -
-	@echo "Lines of code after PA1:"
-	@find ./ -name '*.c' -o -name '*.h' | xargs wc -l | tail -n 1 > /tmp/pa1_lines.txt
-	@cat /tmp/pa1_lines.txt
-	@echo "Lines of code written in PA1:"
-	@echo $$(($(cat /tmp/pa1_lines.txt | awk '{print $$1}') - $(cat /tmp/pa0_lines.txt | awk '{print $$1}')))
+	@( \
+      git stash > /dev/null 2>&1; \
+      git checkout pa0 > /dev/null 2>&1; \
+      echo "[Before PA1]"; \
+      pa0_lines=$$(find ./ -name '*.c' -o -name '*.h' | xargs wc -l | tail -n 1 | awk '{print $$1}'); \
+      echo "  Lines of code before PA1: $$pa0_lines"; \
+      \
+      git checkout - > /dev/null 2>&1; \
+      git stash pop > /dev/null 2>&1; \
+      echo "[After PA1]"; \
+      pa1_lines=$$(find ./ -name '*.c' -o -name '*.h' | xargs wc -l | tail -n 1 | awk '{print $$1}'); \
+      echo "  Lines of code after PA1:  $$pa1_lines"; \
+      \
+      echo "[Diff]"; \
+      echo "  Lines of code written in PA1: $$((pa1_lines - pa0_lines))"; \
+    )
+	

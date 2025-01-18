@@ -125,6 +125,11 @@ config CC_ASAN
 endmenu
 
 menu "Testing and Debugging"
+config WATCHPOINT
+  bool "Enable watchpoint"
+  default n
+  help
+    Enable watchpoint feature to monitor memory access.
 
 
 config TRACE
@@ -213,5 +218,6 @@ endchoice
 config RT_CHECK
   bool "Enable runtime checking"
   default y
+
 
 endmenu

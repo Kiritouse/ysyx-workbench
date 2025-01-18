@@ -18,7 +18,6 @@
 
 #include <common.h>
 
-int32_t expr(char *e, bool *success);
-
+word_t expr(char *e, bool *success);
 
 #endif

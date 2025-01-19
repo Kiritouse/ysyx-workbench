@@ -25,11 +25,11 @@ int main(int argc, char *argv[]) {
 #ifdef CONFIG_TARGET_AM
   am_init_monitor();
 #else
-  init_monitor(argc, argv);
+  init_monitor(argc, argv); //初始化一些配置和参数
 #endif
 
   /* Start engine. */
-  engine_start();
+  engine_start();//包含主循环
 
   return is_exit_status_bad();
 }

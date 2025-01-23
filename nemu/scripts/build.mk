@@ -40,6 +40,17 @@ $(OBJ_DIR)/%.o: %.cc
 	@$(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
 
+# macro expand
+$(OBJ_DIR)/%.i: %.c
+	@echo + CPP $<
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) -E -o $@ $<
+
+$(OBJ_DIR)/%.i: %.cc
+	@echo + CPP $<
+	@mkdir -p $(dir $@)
+	@$(CXX) $(CFLAGS) $(CXXFLAGS) -E -o $@ $<
+
 # Depencies
 -include $(OBJS:.o=.d)
 

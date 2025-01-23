@@ -39,7 +39,7 @@ BITS(i, 30, 21) | \
 (BITS(i, 20, 20) << 10) | \
 (BITS(i, 19, 12) << 11) \
 ) << 1, 21);} while(0)
-//TODO:估计是上面的immj存在bug
+//TODO:估计是上面的immj存在bug ,这里最好多留意一下具体怎么做的//fixed
 
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {
   uint32_t i = s->isa.inst;
@@ -74,6 +74,7 @@ static int decode_exec(Decode *s) {
   //your code here
   INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi   , I, R(rd) = src1 + imm);
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, s->dnpc = s->pc; s->dnpc += imm; R(rd) = s->pc + 4);
+  INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, s->dnpc = (src1 + imm) & ~(word_t)1; R(rd) = s->pc + 4);
 
 
 //end of your code

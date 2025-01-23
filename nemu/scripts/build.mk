@@ -31,25 +31,18 @@ OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
 $(OBJ_DIR)/%.o: %.c
 	@echo + CC $<
 	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) -E -o $(@:.o=.i) $<  # 生成预处理文件
 	@$(CC) $(CFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
 
 $(OBJ_DIR)/%.o: %.cc
 	@echo + CXX $<
 	@mkdir -p $(dir $@)
+	@$(CXX) $(CFLAGS) $(CXXFLAGS) -E -o $(@:.o=.i) $<  # 生成预处理文件
 	@$(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
 
-# macro expand
-$(OBJ_DIR)/%.i: %.c
-	@echo + CPP $<
-	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) -E -o $@ $<
 
-$(OBJ_DIR)/%.i: %.cc
-	@echo + CPP $<
-	@mkdir -p $(dir $@)
-	@$(CXX) $(CFLAGS) $(CXXFLAGS) -E -o $@ $<
 
 # Depencies
 -include $(OBJS:.o=.d)

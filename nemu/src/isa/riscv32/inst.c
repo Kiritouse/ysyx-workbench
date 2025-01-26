@@ -39,7 +39,7 @@ BITS(i, 30, 21) | \
 (BITS(i, 20, 20) << 10) | \
 (BITS(i, 19, 12) << 11) \
 ) << 1, 21);} while(0)
-//TODO:估计是上面的immj存在bug 
+//TODO:估计是上面的immj存在bug,这个jal的imm有点反尝试了，31-21位对应的是imm数的20，10:1 ，11，19:12 顺序非常的怪
 
 //这个函数是根据不同的指令类型来获取各个指令中各个寄存器所对应的域。用于更新寄存器
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {

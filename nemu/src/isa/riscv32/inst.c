@@ -25,7 +25,7 @@
 enum {
   TYPE_I, TYPE_U, TYPE_S,
   TYPE_J, TYPE_R, TYPE_B,
-  TYPE_SHAMT,
+  TYPE_I_SHAMT,
   TYPE_N, // none
 };
 
@@ -64,7 +64,7 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
     case TYPE_J:                   immJ(); break;
     case TYPE_R: src1R(); src2R(); break;
     case TYPE_B: src1R(); src2R(); immB(); break;
-    case TYPE_SHAMT: src1R(); imm_shamt(); break;
+    case TYPE_I_SHAMT: src1R(); imm_shamt(); break;
     case TYPE_N: break;
     default: panic("unsupported type = %d", type);
   }
@@ -106,7 +106,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? 001 ????? 01000 11", sh    , S, Mw(src1 + imm, 2, src2));
 
 //bit.c
-  INSTPAT("0100000 ????? ????? 101 ????? 00100 11", srai   ,SHAMT, R(rd)=src1>>imm);
+  INSTPAT("0100000 ????? ????? 101 ????? 00100 11", srai   , I_SHAMT, R(rd)=src1>>imm);
   INSTPAT("??????? ????? ????? 111 ????? 00100 11", andi   , I, R(rd)=src1&imm);
   INSTPAT("0000000 ????? ????? 001 ????? 01100 11", sll    , R, R(rd)=src1<<src2);
   INSTPAT("0000000 ????? ????? 111 ????? 01100 11", and    , R, R(rd)=src1&src2);

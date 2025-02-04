@@ -25,8 +25,7 @@
 enum {
   TYPE_I, TYPE_U, TYPE_S,
   TYPE_J, TYPE_R, TYPE_B,
-  TYPE_I_SHAMT,
-  TYPE_N, // none
+   TYPE_N, // none
 };
 
 #define src1R() do { *src1 = R(rs1); } while (0)
@@ -48,7 +47,6 @@ BITS(i, 30, 21) <<  1| \
 (BITS(i, 11, 8) << 1) | \
 (BITS(i, 7, 7) << 11) \
 ),13); } while(0)
-#define imm_shamt() do { *imm = SEXT(BITS(i, 24, 20), 5); } while(0)
 
 
 //这个函数是根据不同的指令类型来获取各个指令中各个寄存器所对应的域。用于更新寄存器
@@ -64,7 +62,6 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
     case TYPE_J:                   immJ(); break;
     case TYPE_R: src1R(); src2R(); break;
     case TYPE_B: src1R(); src2R(); immB(); break;
-    case TYPE_I_SHAMT: src1R(); imm_shamt(); break;
     case TYPE_N: break;
     default: panic("unsupported type = %d", type);
   }
@@ -118,8 +115,8 @@ static int decode_exec(Decode *s) {
 
 //crc32.c
   INSTPAT("??????? ????? ????? ??? ????? 01101 11", lui    , U, R(rd) = imm);
-  INSTPAT("0000000 ????? ????? 101 ????? 00100 11", srli   , I, R(rd)=src1>>BITS(imm,4,0)); //question:似乎算术还是逻辑是由寄存器里的值的类型决定的？
-  INSTPAT("??????? ????? ????? 111 ????? 11000 11", bgeu  , B, if(src1 >= src2) s->dnpc = s->pc + imm);
+  INSTPAT("0000000 ????? ????? 101 ????? 00100 11", srli   , I, R(rd)=src1>>BITS(imm,4,0));
+  INSTPAT("??????? ????? ????? 111 ????? 11000 11", bgeu  , B, s->dnpc = (src1 >= src2) ? s->pc + imm : s->dnpc);
   INSTPAT("0000000 ????? ????? 001 ????? 00100 11", slli    , I, R(rd)=src1<<BITS(imm,4,0));
 
 //剩下的一些指令
@@ -135,7 +132,7 @@ static int decode_exec(Decode *s) {
 
 //div.c
   INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul    , R, R(rd)=src1*src2);
-  INSTPAT("0000001 ????? ????? 100 ????? 01100 11", div    , R, R(rd)=src1/src2);
+  INSTPAT("0000001 ????? ????? 100 ????? 01100 11", div    , R, R(rd)=(int32_t)src1/(int32_t)src2);
 
 //goldbach.c
   INSTPAT("0000001 ????? ????? 110 ????? 01100 11", rem    , R, R(rd)=(int32_t)src1%(int32_t)src2);

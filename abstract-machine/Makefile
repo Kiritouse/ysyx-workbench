@@ -45,23 +45,26 @@ endif
 
 ## 2. General Compilation Targets
 
-### Create the destination directory (`build/$ARCH`)
+### Create the destination directory (`build/$ARCH`)，创建构建架构文件夹
 WORK_DIR  = $(shell pwd)
 DST_DIR   = $(WORK_DIR)/build/$(ARCH)
 $(shell mkdir -p $(DST_DIR))
 
-### Compilation targets (a binary image or archive)
+### Compilation targets (a binary image or archive)，
+### 然后通过ar将这些目标文件作为一个库, 打包成一个归档文件abstract-machine/am/build/am-$ISA-nemu.a
 IMAGE_REL = build/$(NAME)-$(ARCH)
 IMAGE     = $(abspath $(IMAGE_REL))
 ARCHIVE   = $(WORK_DIR)/build/$(NAME)-$(ARCH).a
 
 ### Collect the files to be linked: object files (`.o`) and libraries (`.a`)
+### gcc将$ISA-nemu的AM实现源文件编译成目标文件, 然后通过ar将这些目标文件作为一个库, 打包成一个归档文件abstract-machine/am/build/am-$ISA-nemu.a
 OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
 LIBS     := $(sort $(LIBS) am klib) # lazy evaluation ("=") causes infinite recursions
+# 通过gcc和ar把程序依赖的运行库(如abstract-machine/klib/)也编译并打包成归档文件
 LINKAGE   = $(OBJS) \
   $(addsuffix -$(ARCH).a, $(join \
     $(addsuffix /build/, $(addprefix $(AM_HOME)/, $(LIBS))), \
-    $(LIBS) ))
+    $(LIBS) )) # 链接所有的.o和.a文件,这里后半部分的.a是指例如am/build/am-riscv32-nemu.a和klib下也有同名的,即klib/build/klib-riscv32-nemu.a
 
 ## 3. General Compilation Flags
 
@@ -94,6 +97,8 @@ LDFLAGS  += -z noexecstack $(addprefix -T, $(LDSCRIPTS))
 ## 4. Arch-Specific Configurations
 
 ### Paste in arch-specific configurations (e.g., from `scripts/x86_64-qemu.mk`)
+### 根据Makefile文件abstract-machine/scripts/$ISA-nemu.mk中的指示, 
+### 让ld根据链接脚本abstract-machine/scripts/linker.ld, 将上述目标文件和归档文件链接成可执行文件
 -include $(AM_HOME)/scripts/$(ARCH).mk
 
 ## 5. Compilation Rules

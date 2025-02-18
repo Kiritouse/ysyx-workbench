@@ -40,56 +40,30 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   panic("Not implemented");
 }
 
-// int sprintf(char *out, const char *fmt, ...) {
-//   va_list _Args;
-//   va_start(_Args,fmt);
-//   char *start = out;
-//   for(;*fmt!='\0';fmt++){
-//     if(*fmt!='%'){
-//       *out = *fmt;
-//       out++;
-//     }
-//     else{
-//       switch(*(++fmt)){ //看占位符%下一位是什么
-//         case '%':*out = *fmt;out++;break;
-//         case 'd': out += itoa(va_arg(_Args, int), out, 10); break;
-//         case 's':
-//           char *s = va_arg(_Args, char*);
-//           strcpy(out, s);
-//           out += strlen(out);
-//           break;
-//         }
-//       }
-//     }
-//     *out = '\0';
-//     va_end(_Args);  
-//     return out - start;
-// }
 int sprintf(char *out, const char *fmt, ...) {
-  va_list pArgs;
-  va_start(pArgs, fmt);
+  va_list _Args;
+  va_start(_Args,fmt);
   char *start = out;
-  
-  for (; *fmt != '\0'; ++fmt) {
-    if (*fmt != '%') {
+  for(;*fmt!='\0';fmt++){
+    if(*fmt!='%'){
       *out = *fmt;
-      ++out;
-    } else {
-      switch (*(++fmt)) {
-      case '%': *out = *fmt; ++out; break;
-      case 'd': out += itoa(va_arg(pArgs, int), out, 10); break;
-      case 's':
-        char *s = va_arg(pArgs, char*);
-        strcpy(out, s);
-        out += strlen(out);
-        break;
+      out++;
+    }
+    else{
+      switch(*(++fmt)){ //看占位符%下一位是什么
+        case '%':*out = *fmt;out++;break;
+        case 'd': out += itoa(va_arg(_Args, int), out, 10); break;
+        case 's':
+          char *s = va_arg(_Args, char*);
+          strcpy(out, s);
+          out += strlen(out);
+          break;
+        }
       }
     }
-  }
-  *out = '\0';
-  va_end(pArgs);
-
-  return out - start;
+    *out = '\0';
+    va_end(_Args);  
+    return out - start;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {

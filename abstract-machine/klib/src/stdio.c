@@ -9,7 +9,7 @@
 static char *__out;
 void sputch(char ch){*__out++ = ch;}
 
-int vprintf( void(*gputch)(char) , const char *fmt, va_list ap){
+int vprintf( void(*gputch)(char) , const char *fmt, va_list ap){ //返回输出的字符数
 	int i;
 	bool in_format = false;
 	int long_flags = 0;//处理%ld这种大于一个字符的占位符
@@ -115,12 +115,12 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 
 int sprintf(char *out, const char *fmt, ...) {
   va_list ap;
-	va_start(ap, fmt);
-	__out = out;
-	int res = vprintf(sputch , fmt , ap);
+	va_start(ap, fmt); //将ap指向fmt后面的参数
+	__out = out;//将结果返回到out中
+	int cnt = vprintf(sputch , fmt , ap);
 	sputch('\0');
 	va_end(ap);
-	return res++;
+	return cnt++;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {

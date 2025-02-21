@@ -44,49 +44,65 @@ char *strcat(char *dst, const char *src) {
 }
 
 int strcmp(const char *s1, const char *s2) {
+  assert(s1&&s2);
   for (int i = 0; s1[i] != '\0' || s2[i] != '\0'; i++) {
 		if (s1[i] != s2[i]) {
-  			return (s1[i] < s2[i]) ? -1 : 1;
+  			return *s1-*s2;
   		}
 	}
   return 0;
 }
 
 int strncmp(const char *s1, const char *s2, size_t n) {
-  for (int i = 0; i < n; i++) {
-    if (s1[i] != s2[i]) {
-  			return (s1[i] < s2[i]) ? -1 : 1;
-  		}
-  }
-  return 0;
+  const char* p1 = s1;
+  const char* p2 = s2;
+  assert(p1 && p2);
+  if (!n) return 0; // 如果比较长度为0，直接返回0
+  while (--n && *p1 && (*p1 == *p2)) {
+    p1++;
+    p2++;
+}
+  return *p1 - *p2; // 返回第一个不匹配字符的差值
 }
 
 void *memset(void *s, int c, size_t n) {
-  for(int i = 0;i<n;i++){
-    ((char *)s)[i] = c; //转为按字节操作，然后每个字节都赋值为c
+  assert(s);
+  unsigned char *p = s;
+  while(n--) {
+    *p++ = (unsigned char)c;
   }
-  return NULL;
+  return s;
 }
 
 void *memmove(void *dst, const void *src, size_t n) {
-  for(int i = 0;i<n;i++){
-    ((char *)dst)[i] = ((char *)src)[i];
+  unsigned char*p = dst;
+  while(n--){
+    *p++ = *(unsigned char*)src++;
   }
-  return NULL;
+  return dst;
 }
 
+//TODO:处理内存重叠和进行优化
 void *memcpy(void *out, const void *in, size_t n) {
-  for(int i = 0;i<n;i++){
-    ((char *)out)[i] = ((char *)in)[i];
+  assert(out && in);
+  char*pout = out;
+  const char*pin = in;
+  while(n--){
+    *pout++ = *pin++;
   }
-  return NULL;
+  return out;
+  
 }
 
 int memcmp(const void *s1, const void *s2, size_t n) {
-  for(int i = 0;i<n;i++){
-    if(((char *)s1)[i] != ((char *)s2)[i]){
-      return ((char *)s1)[i] < ((char *)s2)[i] ? -1 : 1;
+  const unsigned char *ps1 = (const unsigned char *)s1;
+  const unsigned char *ps2 = (const unsigned char *)s2;
+  while (n--) {
+    if (*ps1 != *ps2) {
+    return *ps1 - *ps2;
     }
+    ps1++;
+    ps2++;
   }
   return 0;
 }

@@ -115,8 +115,8 @@ To avoid overflows, the size of the arrays pointed to by both the destination an
 */
 void *memcpy(void *out, const void *in, size_t n) {
   assert(out && in);
-  char*pout = out;
-  const char*pin = in;
+  char*pout =(char*) out;
+  char*pin = (char*)in;
   while(n--){
     *pout++ = *pin++;
   }

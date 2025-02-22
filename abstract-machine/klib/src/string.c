@@ -47,22 +47,22 @@ int strcmp(const char *s1, const char *s2) {
   assert(s1&&s2);
   for (int i = 0; s1[i] != '\0' || s2[i] != '\0'; i++) {
 		if (s1[i] != s2[i]) {
-      return (s1[i] < s2[i]) ? -1 : 1;
+  			return s1[i]-s2[i];
   		}
 	}
   return 0;
 }
 
 int strncmp(const char *s1, const char *s2, size_t n) {
-  for (size_t i = 0; i < n; i++) {
-    if (s1[i] == '\0' || s2[i] == '\0' || s1[i] != s2[i]) {
-        if (s1[i] == s2[i]) { //均为结束符号
-            return 0;
-        }
-        return (s1[i] < s2[i]) ? -1 : 1;
-    }
-  }
-  return 0;
+  const char* p1 = s1;
+  const char* p2 = s2;
+  assert(p1 && p2);
+  if (!n) return 0; // 如果比较长度为0，直接返回0
+  while (--n && *p1 && (*p1 == *p2)) {
+    p1++;
+    p2++;
+}
+  return *p1 - *p2; // 返回第一个不匹配字符的差值
 }
 
 void *memset(void *s, int c, size_t n) {

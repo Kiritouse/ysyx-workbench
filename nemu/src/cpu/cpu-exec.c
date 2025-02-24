@@ -48,9 +48,10 @@ static void exec_once(Decode *s, vaddr_t pc) {
   s->snpc = pc;
   isa_exec_once(s);
   cpu.pc = s->dnpc;
+  //log 追踪
 #ifdef CONFIG_ITRACE 
   char *p = s->logbuf;
-  p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
+  p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":--", s->pc);//打印pc
   int ilen = s->snpc - s->pc;
   int i;
   uint8_t *inst = (uint8_t *)&s->isa.inst;
@@ -59,19 +60,19 @@ static void exec_once(Decode *s, vaddr_t pc) {
 #else
   for (i = ilen - 1; i >= 0; i --) {
 #endif
-    p += snprintf(p, 4, " %02x", inst[i]);
+    p += snprintf(p, 4, " %02x", inst[i]);//16进制打印，不足2位前面补0，打印指令的16进制
   }
   int ilen_max = MUXDEF(CONFIG_ISA_x86, 8, 4);
   int space_len = ilen_max - ilen;
   if (space_len < 0) space_len = 0;
   space_len = space_len * 3 + 1;
-  memset(p, ' ', space_len);
-  p += space_len;
+  memset(p, ' ', space_len); //填充空格
+  p += space_len;//移动到空格末尾
 
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);//还有这种用法，只在一个函数中声明一个函数
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
-#endif
+#endif //打印出反汇编指令的内容
 
 // //扫描所有监视点
 // #ifdef CONFIG_WATCHPOINT

@@ -6,6 +6,7 @@
 #include <string.h>
 #include <utils.h>
 #include <unistd.h>
+//TODO:进行ring_buffer的单元测试
 static int segcnt = 0;
 RingBuffer_T *iring_buffer=NULL;//全局iring_buffer
 static inline uint64_t minPageSize(size_t length) {

@@ -78,8 +78,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
 #endif //根据当前指令inst(2进制数据/16进制数据)进行反汇编，输出反汇编指令
 
-//TODO:到时候将这一行p写入到iringbuffer即可
-//TODO:如何保证到时候读取的时候能够一行一行地读取？
+
 ring_buffer_write(s->logbuf, strlen(s->logbuf));
 
 
@@ -89,19 +88,17 @@ ring_buffer_write(s->logbuf, strlen(s->logbuf));
 
 static void execute(uint64_t n) {
   Decode s;
-  unsigned char* r_ptr = NULL;
+ // unsigned char* r_ptr = NULL;
   for (;n > 0; n --) {
     exec_once(&s, cpu.pc); //具体指令的执行，记录每次执行的log
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);//写入Decode的logbuf 
-    if (nemu_state.state != NEMU_RUNNING){
-      //TODO:输出ring_buffer中的所有内容
-      //TODO:如何保证能够指令一行指令地读取
-      r_ptr = get_ring_buffer_read_pointer();
-      assert(r_ptr);
-      log_write("--->:%s\n",r_ptr); 
-      break;
-    }
+    // if (nemu_state.state != NEMU_RUNNING){
+    //   //todo：如何输出？
+    //   uint64_t ring_buf_size=  rng_buf_len(iring_buffer);
+    //   ring_buffer_read()
+    //   break;
+    // }
     IFDEF(CONFIG_DEVICE, device_update());
   }
 }

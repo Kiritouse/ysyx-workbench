@@ -79,7 +79,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 #endif //根据当前指令inst(2进制数据/16进制数据)进行反汇编，输出反汇编指令
 
 
-ring_buffer_write(s->logbuf, strlen(s->logbuf));
+//ring_buffer_write(s->logbuf, strlen(s->logbuf));
 
 
 }

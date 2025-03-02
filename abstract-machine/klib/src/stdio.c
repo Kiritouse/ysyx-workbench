@@ -6,21 +6,17 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 #define MAXDEC 64
 
-void sputch(char**pbuffer,char ch){*((*pbuffer)++) = ch;}
+static char *__out;
+void sputch(char ch){*__out++ = ch;}
 
-int printf(const char *fmt, ...) {
-  panic("Not implemented");
-}
-
-int vsprintf(char *out, const char *fmt, va_list ap) {
-	char*pout = out;
+int vprintf( void(*gputch)(char) , const char *fmt, va_list ap){ //返回输出的字符数
 	int i;
 	bool in_format = false;
 	int long_flags = 0;//处理%ld这种大于一个字符的占位符
 	int cnt = 0;
 	for( ;*fmt != '\0';fmt++){
 		if(*fmt != '%' && in_format == false){//如果是普通字符，调用打印函数将字符放入输出字符串即可
-			sputch(&pout,*fmt);cnt++;
+			gputch(*fmt);cnt++;
 		}
 		else{//如果是占位符，那么就根据%后面的类型进行判断，则得先跳过%字符，并且设置in_format为true，是为了表示进入了占位符替换模式的状态
 			if(in_format == false && (*fmt == '%')){
@@ -36,7 +32,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 					assert(long_flags == 0);
 					s = va_arg(ap , char *);
 					for(i = 0; s[i] != '\0'; i++){
-						sputch(&pout,s[i]);cnt++;
+						gputch(s[i]);cnt++;
 					}
 					in_format = false;
 					break;
@@ -44,7 +40,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 					int c;
 					assert(long_flags == 0);//只有一位的情况
 					c = va_arg(ap , int);//获取字符的ascii码
-					sputch(&pout,(char)c);cnt++;
+					gputch((char)c);cnt++;
 					in_format = false;
 					break;
 				case 'd':{//%d或者%ld
@@ -58,10 +54,10 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
             //处理负数和0的情况
 					if(d < 0){
 						d = -d;
-						sputch(&pout,'-');cnt++;
+						gputch('-');cnt++;
 					}
 					if(d == 0){
-						sputch(&pout,'0');cnt++;
+						gputch('0');cnt++;
 					};
           //将数字转换为字符串
 					char invert[MAXDEC];
@@ -70,7 +66,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 						invert[i] = d%10 + '0';
 					}
 					for(i-=1 ;i >= 0 ; i--){
-						sputch(&pout,invert[i]);cnt++;
+						gputch(invert[i]);cnt++;
 					}
 					long_flags = 0;
 					in_format = false;
@@ -85,7 +81,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 						u = va_arg(ap , uint32_t);
 
 					if(u == 0){
-						sputch(&pout,'0');cnt++;
+						gputch('0');cnt++;
 					};
 					char invert[MAXDEC];
 					i = 0;
@@ -93,27 +89,36 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 						invert[i] = u%10 + '0';
 					}
 					for(i-=1 ;i >= 0 ; i--){
-						sputch(&pout,invert[i]);cnt++;
+						gputch(invert[i]);cnt++;
 					}
 					long_flags = 0;
 					in_format = false;
 					break;
 					}
 				case '%':
-					sputch(&pout,'%');
+					gputch('%');
 					in_format = false;
 					break;
 			}
 		}
 	}
-	sputch(&pout,'\0');
 	return cnt;
 }
 
+int printf(const char *fmt, ...) {
+  panic("Not implemented");
+}
+
+int vsprintf(char *out, const char *fmt, va_list ap) {
+  panic("Not implemented");
+}
+
 int sprintf(char *out, const char *fmt, ...) {
-  	va_list ap;
+  va_list ap;
 	va_start(ap, fmt); //将ap指向fmt后面的参数
-	int cnt = vsprintf(out , fmt , ap);
+	__out = out;//将结果返回到out中
+	int cnt = vprintf(sputch , fmt , ap);
+	sputch('\0');
 	va_end(ap);
 	return cnt++;
 }

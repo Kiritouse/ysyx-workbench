@@ -49,7 +49,7 @@ BITS(i, 30, 21) <<  1| \
 ),13); } while(0)
 
 
-//这个函数是根据不同的指令类型来获取各个指令中各个寄存器所对应的域。用于更新寄存器
+//这个函数是根据不同的指令类型来获取各个指令中各个寄存器所在指令的哪位到哪些位。
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {
   uint32_t i = s->isa.inst;
   int rs1 = BITS(i, 19, 15);
@@ -139,7 +139,7 @@ static int decode_exec(Decode *s) {
 
 //goldbach.c
   INSTPAT("0000001 ????? ????? 110 ????? 01100 11", rem    , R, R(rd)=(sword_t)src1%(sword_t)src2);
-  //lb和lu如何区分?
+  //lb和lu如何区分? ans:类型转换
  
 //mersenne.c
 //有符号乘法高位，返回乘法后的高32位

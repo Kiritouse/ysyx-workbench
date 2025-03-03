@@ -79,8 +79,6 @@ static void exec_once(Decode *s, vaddr_t pc) {
 #endif //根据当前指令inst(2进制数据/16进制数据)进行反汇编，输出反汇编指令
 
 
-//ring_buffer_write(s->logbuf, strlen(s->logbuf));
-
 
 }
 
@@ -93,12 +91,6 @@ static void execute(uint64_t n) {
     exec_once(&s, cpu.pc); //具体指令的执行，记录每次执行的log
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);//写入Decode的logbuf 
-    // if (nemu_state.state != NEMU_RUNNING){
-    //   //todo：如何输出？
-    //   uint64_t ring_buf_size=  rng_buf_len(iring_buffer);
-    //   ring_buffer_read()
-    //   break;
-    // }
     IFDEF(CONFIG_DEVICE, device_update());
   }
 }

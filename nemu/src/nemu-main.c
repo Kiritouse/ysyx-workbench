@@ -32,7 +32,6 @@ int main(int argc, char *argv[]) {
   /* Start engine. */
   engine_start();//包含主循环
 
-  
-  ring_buffer_destroy(&iring_buffer);
+
   return is_exit_status_bad();
 }

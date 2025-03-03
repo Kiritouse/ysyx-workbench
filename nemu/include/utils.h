@@ -37,60 +37,6 @@ typedef struct{
   //buffer 满的时候 (end+1)%length = start
   char name[1];
 }RingBuffer_T;
-extern RingBuffer_T *iring_buffer;//全局iring_buffer
-
-void init_ring_buffer(uint64_t length);
-void ring_buffer_destroy(RingBuffer_T** ringbuffer);
-void ring_buffer_write(char*buffer,uint64_t size);
-void ring_buffer_read(char* out,uint64_t size);
-static inline unsigned char*
-   get_ring_buffer_write_pointer(){
-  return iring_buffer->base+iring_buffer->write_offset;
-}
-
-static inline void
-ring_buffer_write_advance (uint64_t size)
-{
-	iring_buffer->write_offset += size;
-}
-
-static inline unsigned char *
-get_ring_buffer_read_pointer ()
-{
-	if (iring_buffer->read_offset >= iring_buffer->size)
-	{
-		iring_buffer->read_offset -= iring_buffer->size;
-		iring_buffer->write_offset -= iring_buffer->size;
-	}
-  return iring_buffer->base + iring_buffer->read_offset;
-}
-
-static inline void
-ring_buffer_read_advance (
-                          uint64_t size)
-{
-	iring_buffer->read_offset += size;
-// 如果读指针大于等于缓冲区长度，那些读写指针同时折返回[0, buffer_size]范围内
-//这里需要我们之后能再次插入数据，如果不返回的话再继续再>size处进行offset的话就不能再次读出数据
-	if (iring_buffer->read_offset >= iring_buffer->size)
-	{
-		iring_buffer->read_offset -= iring_buffer->size;
-		iring_buffer->write_offset -= iring_buffer->size;
-	}
-}
-
-static inline uint64_t
-rng_buf_len (RingBuffer_T *rb)
-{
-	return rb->write_offset - rb->read_offset;
-}
-
-static inline uint64_t
-rng_buf_free_bytes (RingBuffer_T*rb)
-{
-	return rb->size - rng_buf_len (rb);
-}
-
 extern NEMUState nemu_state;
 
 // ----------- timer -----------

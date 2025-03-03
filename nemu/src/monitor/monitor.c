@@ -130,6 +130,7 @@ void init_monitor(int argc, char *argv[]) {
 
   IFDEF(CONFIG_ITRACE, init_disasm());
 
+
   /* Display welcome message. */
   welcome();
 }

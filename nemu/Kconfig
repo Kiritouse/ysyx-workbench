@@ -131,6 +131,12 @@ config WATCHPOINT
   help
     Enable watchpoint feature to monitor memory access.
 
+config IRINGBUFFER
+  bool "Enable instruction ring buffer"
+  default n
+  help
+    Enable instruction ring buffer to store the executed instructions.
+
 
 config TRACE
   bool "Enable tracer"

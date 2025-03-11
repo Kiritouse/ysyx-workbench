@@ -19,6 +19,7 @@ void init_monitor(int, char *[]);
 void am_init_monitor();
 void engine_start();
 int is_exit_status_bad();
+void ring_buffer_destroy(RingBuffer_T* *rb);
 
 int main(int argc, char *argv[]) {
   /* Initialize the monitor. */
@@ -30,6 +31,7 @@ int main(int argc, char *argv[]) {
 
   /* Start engine. */
   engine_start();//包含主循环
+
 
   return is_exit_status_bad();
 }

@@ -37,6 +37,7 @@ void iringbuf_write(char*inst);
 void iringbuf_print();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+  IFDEF(CONFIG_ITRACE, iringbuf_write(_this->logbuf));
   iringbuf_write(_this->logbuf);
 
 #ifdef CONFIG_ITRACE_COND

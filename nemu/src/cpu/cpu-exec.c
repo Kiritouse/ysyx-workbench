@@ -33,12 +33,20 @@ static bool g_print_step = false;
 void device_update();
 void difftest_wp();
 
+void iringbuf_write(char*inst);
+void iringbuf_print();
+
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+  IFDEF(CONFIG_ITRACE, iringbuf_write(_this->logbuf));
+  iringbuf_write(_this->logbuf);
+
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+
+
 
   IFDEF(CONFIG_WATCHPOINT, difftest_wp());
 }
@@ -73,10 +81,6 @@ static void exec_once(Decode *s, vaddr_t pc) {
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
 #endif
 
-// //扫描所有监视点
-// #ifdef CONFIG_WATCHPOINT
-//   difftest_wp();
-// #endif
 }
 
 

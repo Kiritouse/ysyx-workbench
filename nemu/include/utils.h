@@ -27,16 +27,7 @@ typedef struct {
   uint32_t halt_ret;
 } NEMUState;
 
-typedef struct{
-  unsigned char* base;
-  uint64_t size;
-  uint64_t write_offset; //read buffer[start]
-  uint64_t read_offset; //write buffer[end]
-  //最多可以使用的buffer为length-1
-  //buffer 为空的时候start =end
-  //buffer 满的时候 (end+1)%length = start
-  char name[1];
-}RingBuffer_T;
+
 extern NEMUState nemu_state;
 
 // ----------- timer -----------

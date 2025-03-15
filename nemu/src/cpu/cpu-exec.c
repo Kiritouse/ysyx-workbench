@@ -37,7 +37,7 @@ void iringbuf_write(char*inst);
 void iringbuf_print();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
-  IFDEF(CONFIG_ITRACE, iringbuf_write(_this->logbuf));
+  IFDEF(CONFIG_IRINGBUFFER, iringbuf_write(_this->logbuf));
   iringbuf_write(_this->logbuf);
 
 #ifdef CONFIG_ITRACE_COND
@@ -99,6 +99,7 @@ static void execute(uint64_t n) {
   for (;n > 0; n --) {
     exec_once(&s, cpu.pc); //具体指令的执行，记录每次执行的log
     g_nr_guest_inst ++;
+    if (nemu_state.state != NEMU_RUNNING) break;
     trace_and_difftest(&s, cpu.pc);//写入Decode的logbuf 
     IFDEF(CONFIG_DEVICE, device_update());
   }

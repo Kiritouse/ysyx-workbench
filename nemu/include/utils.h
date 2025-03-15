@@ -27,6 +27,7 @@ typedef struct {
   uint32_t halt_ret;
 } NEMUState;
 
+<<<<<<< HEAD
 typedef struct{
   unsigned char* base;
   uint64_t size;
@@ -37,6 +38,9 @@ typedef struct{
   //buffer 满的时候 (end+1)%length = start
   char name[1];
 }RingBuffer_T;
+=======
+
+>>>>>>> feat_iring_buffer
 extern NEMUState nemu_state;
 
 // ----------- timer -----------

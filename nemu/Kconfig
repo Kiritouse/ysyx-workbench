@@ -137,12 +137,6 @@ config IRINGBUFFER
   help
     Enable instruction ring buffer to store the executed instructions.
 
-config MTRACE
-  bool "Enable memory trace"
-  default n
-  help
-    Enable memory trace in paddr_read and write.
-
 
 config TRACE
   bool "Enable tracer"

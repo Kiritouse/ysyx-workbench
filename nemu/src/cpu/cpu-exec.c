@@ -99,6 +99,7 @@ static void execute(uint64_t n) {
   for (;n > 0; n --) {
     exec_once(&s, cpu.pc); //具体指令的执行，记录每次执行的log
     g_nr_guest_inst ++;
+    if (nemu_state.state != NEMU_RUNNING) break;
     trace_and_difftest(&s, cpu.pc);//写入Decode的logbuf 
     IFDEF(CONFIG_DEVICE, device_update());
   }

@@ -36,8 +36,6 @@ void difftest_wp();
 void iringbuf_write(char*inst);
 void iringbuf_print();
 
-void display_pread(paddr_t addr, int len);
-void display_pwrite(paddr_t addr, int len, word_t data);
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   IFDEF(CONFIG_IRINGBUFFER, iringbuf_write(_this->logbuf));

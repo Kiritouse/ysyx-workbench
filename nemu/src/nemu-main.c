@@ -19,8 +19,8 @@ void init_monitor(int, char *[]);
 void am_init_monitor();
 void engine_start();
 int is_exit_status_bad();
-void ring_buffer_destroy(IRingBuf_T* *rb);
-
+void iringbuf_free();
+extern IRingBuf_T *global_iring_buf;
 int main(int argc, char *argv[]) {
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
@@ -31,7 +31,6 @@ int main(int argc, char *argv[]) {
 
   /* Start engine. */
   engine_start();//包含主循环
-
-
+  iringbuf_free();
   return is_exit_status_bad();
 }

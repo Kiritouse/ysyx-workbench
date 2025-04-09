@@ -31,6 +31,9 @@
 #include <stdlib.h>
 #endif
 
+
+#include <cpu/iring_buf.h>
+
 #if CONFIG_MBASE + CONFIG_MSIZE > 0x100000000ul
 #define PMEM64 1
 #endif
